@@ -23,7 +23,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS } from "@/constants/colors";
 
 const { height, width } = Dimensions.get("window");
-const visualSize = Math.min(width * 0.86, 380);
+const phoneWidth = Math.min(width, 430);
+const visualSize = Math.min(phoneWidth * 0.86, 360);
 
 export default function WelcomeScreen() {
   const logoOpacity = useSharedValue(0);
@@ -72,23 +73,16 @@ export default function WelcomeScreen() {
   return (
     <LinearGradient colors={["#121212", "#1A1A1A", "#0F0F0F"]} style={styles.screen}>
       <SafeAreaView style={styles.safeArea}>
-        <View style={styles.goldHalo} />
-        <View style={styles.terracottaHalo} />
-        <View style={styles.vignetteTop} />
-        <View style={styles.content}>
-          <Animated.View style={[styles.logoSection, logoAnimatedStyle]}>
-            <View style={styles.logoGlow} />
-            {/* Reemplazar por logo final si se actualiza: assets/images/welcome/logo.png */}
-            <Image source={require("@/assets/images/logo.png")} style={styles.logoImage} resizeMode="contain" />
-            <Text style={styles.logoFallback}>MARIACHI</Text>
-            <View style={styles.logoRuleRow}>
-              <View style={styles.logoRule} />
-              <Text style={styles.logoCity}>GDL</Text>
-              <View style={styles.logoRule} />
-            </View>
-          </Animated.View>
+        <View style={styles.phoneFrame}>
+          <View style={styles.goldHalo} />
+          <View style={styles.terracottaHalo} />
+          <View style={styles.vignetteTop} />
+          <View style={styles.content}>
+            <Animated.View style={[styles.logoSection, logoAnimatedStyle]}>
+              <Image source={require("@/assets/images/logo.png")} style={styles.logoImage} resizeMode="contain" />
+            </Animated.View>
 
-          <Animated.View style={[styles.visualSection, visualAnimatedStyle]}>
+            <Animated.View style={[styles.visualSection, visualAnimatedStyle]}>
             <View style={styles.visualGlow} />
             {/* Reemplazar por fondo sutil de mariachis: assets/images/welcome/mariachi-bg.png */}
             <ImageBackground
@@ -170,7 +164,8 @@ export default function WelcomeScreen() {
                 <View key={dot} style={[styles.dot, dot === 0 ? styles.dotActive : styles.dotInactive]} />
               ))}
             </View>
-          </Animated.View>
+            </Animated.View>
+          </View>
         </View>
       </SafeAreaView>
     </LinearGradient>
@@ -181,32 +176,39 @@ const GOLD_LINE = "rgba(200,155,60,0.72)";
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: COLORS.black },
-  safeArea: { flex: 1, overflow: "hidden" },
+  safeArea: { flex: 1, alignItems: "center", backgroundColor: COLORS.black, overflow: "hidden" },
+  phoneFrame: {
+    flex: 1,
+    width: "100%",
+    maxWidth: 430,
+    overflow: "hidden",
+    backgroundColor: COLORS.black,
+  },
   content: {
     flex: 1,
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 24,
-    paddingBottom: Math.max(20, height * 0.035),
-    paddingTop: Math.max(24, height * 0.045),
+    paddingHorizontal: 28,
+    paddingBottom: Math.max(24, height * 0.032),
+    paddingTop: Math.max(36, height * 0.075),
   },
   goldHalo: {
     position: "absolute",
-    top: -80,
-    right: -90,
-    width: 230,
-    height: 230,
-    borderRadius: 115,
-    backgroundColor: "rgba(200,155,60,0.13)",
+    top: -72,
+    right: -104,
+    width: 190,
+    height: 190,
+    borderRadius: 95,
+    backgroundColor: "rgba(200,155,60,0.08)",
   },
   terracottaHalo: {
     position: "absolute",
-    bottom: 110,
-    left: -120,
-    width: 260,
-    height: 260,
-    borderRadius: 130,
-    backgroundColor: "rgba(182,90,58,0.12)",
+    bottom: 78,
+    left: -152,
+    width: 230,
+    height: 230,
+    borderRadius: 115,
+    backgroundColor: "rgba(182,90,58,0.08)",
   },
   vignetteTop: {
     position: "absolute",
@@ -215,31 +217,11 @@ const styles = StyleSheet.create({
     height: height * 0.42,
     backgroundColor: "rgba(0,0,0,0.18)",
   },
-  logoSection: { alignItems: "center", minHeight: 150, justifyContent: "center" },
-  logoGlow: {
-    position: "absolute",
-    width: 190,
-    height: 90,
-    borderRadius: 95,
-    backgroundColor: "rgba(200,155,60,0.12)",
-    transform: [{ scaleX: 1.35 }],
-  },
-  logoImage: { position: "absolute", width: 140, height: 140, opacity: 0.14 },
-  logoFallback: {
-    color: COLORS.gold,
-    fontSize: width < 370 ? 40 : 48,
-    fontWeight: "800",
-    letterSpacing: 4,
-    textShadowColor: "rgba(216,183,106,0.24)",
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 14,
-  },
-  logoRuleRow: { flexDirection: "row", alignItems: "center", gap: 12, marginTop: -2 },
-  logoRule: { width: 74, height: StyleSheet.hairlineWidth, backgroundColor: COLORS.gold },
-  logoCity: { color: COLORS.ivory, fontSize: 28, fontWeight: "700", letterSpacing: 2 },
+  logoSection: { alignItems: "center", minHeight: 132, justifyContent: "center", width: "100%" },
+  logoImage: { width: Math.min(phoneWidth * 0.78, 330), height: 112 },
   visualSection: {
     width: visualSize,
-    height: Math.min(height * 0.36, 310),
+    height: Math.min(height * 0.32, 280),
     alignItems: "center",
     justifyContent: "flex-end",
   },
@@ -252,9 +234,9 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(200,155,60,0.08)",
   },
   mariachiAtmosphere: { position: "absolute", width: "100%", height: "100%", justifyContent: "flex-end" },
-  mariachiImage: { opacity: 0.17, resizeMode: "cover", transform: [{ scale: 1.1 }] },
+  mariachiImage: { opacity: 0.24, resizeMode: "cover", transform: [{ scale: 1.18 }] },
   mariachiOverlay: { flex: 1 },
-  cityLineArt: { flexDirection: "row", alignItems: "flex-end", justifyContent: "center", width: "100%", gap: 6, paddingBottom: 18 },
+  cityLineArt: { flexDirection: "row", alignItems: "flex-end", justifyContent: "center", width: "100%", gap: 3, paddingBottom: 16, transform: [{ scale: phoneWidth < 380 ? 0.82 : 0.94 }] },
   cathedralTower: { alignItems: "center" },
   towerSpire: {
     width: 0,
@@ -284,8 +266,8 @@ const styles = StyleSheet.create({
   copySection: { alignItems: "center", marginTop: 2 },
   headline: {
     color: COLORS.ivory,
-    fontSize: width < 370 ? 24 : 27,
-    lineHeight: width < 370 ? 32 : 36,
+    fontSize: phoneWidth < 370 ? 22 : 24,
+    lineHeight: phoneWidth < 370 ? 30 : 33,
     fontWeight: "600",
     textAlign: "center",
     letterSpacing: 0.2,
@@ -299,7 +281,7 @@ const styles = StyleSheet.create({
   bottomSection: { width: "100%", alignItems: "center", gap: 20 },
   buttonShadow: {
     width: "100%",
-    maxWidth: 330,
+    maxWidth: 320,
     borderRadius: 18,
     shadowColor: COLORS.gold,
     shadowOffset: { width: 0, height: 10 },
@@ -307,7 +289,7 @@ const styles = StyleSheet.create({
     shadowRadius: 18,
     elevation: 8,
   },
-  button: { height: 62, borderRadius: 18, alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: "rgba(255,255,255,0.22)" },
+  button: { height: 58, borderRadius: 18, alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: "rgba(255,255,255,0.22)" },
   buttonText: { color: COLORS.black, fontSize: 18, fontWeight: "800", letterSpacing: 0.3 },
   dotsRow: { flexDirection: "row", alignItems: "center", gap: 8, marginBottom: Platform.OS === "android" ? 2 : 0 },
   dot: { width: 8, height: 8, borderRadius: 4 },

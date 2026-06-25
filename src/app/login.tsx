@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Image } from "react-native";
-
 import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  Dimensions,
+  Image,
+  ImageBackground,
   KeyboardAvoidingView,
   Platform,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 import { router } from "expo-router";
@@ -20,17 +19,18 @@ import { LinearGradient } from "expo-linear-gradient";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
-  withTiming,
   withSpring,
+  withTiming,
 } from "react-native-reanimated";
 
 import { COLORS } from "@/constants/colors";
 
-const { width } = Dimensions.get("window");
+const MAX_PHONE_WIDTH = 430;
 
 export default function LoginScreen() {
   const [showPassword, setShowPassword] = useState(false);
-const [passwordFocused, setPasswordFocused] = useState(false);
+  const [emailFocused, setEmailFocused] = useState(false);
+  const [passwordFocused, setPasswordFocused] = useState(false);
 
   const logoOpacity = useSharedValue(0);
   const logoTranslateY = useSharedValue(-40);
@@ -46,7 +46,7 @@ const [passwordFocused, setPasswordFocused] = useState(false);
 
     cardOpacity.value = withTiming(1, { duration: 1400 });
     cardTranslateY.value = withTiming(0, { duration: 1400 });
-  }, []);
+  }, [cardOpacity, cardTranslateY, logoOpacity, logoTranslateY]);
 
   const logoAnimatedStyle = useAnimatedStyle(() => ({
     opacity: logoOpacity.value,
@@ -63,176 +63,202 @@ const [passwordFocused, setPasswordFocused] = useState(false);
   }));
 
   return (
-    <LinearGradient
-      colors={["#121212", "#1A1A1A", "#232323"]}
-      style={styles.container}
+    <ImageBackground
+      source={require("@/assets/images/mariachis/mariachibg.png")}
+      style={styles.background}
+      imageStyle={styles.backgroundImage}
+      resizeMode="cover"
     >
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        style={styles.keyboard}
+      <LinearGradient
+        colors={[
+          "rgba(18,18,18,0.72)",
+          "rgba(18,18,18,0.88)",
+          "rgba(0,0,0,0.96)",
+        ]}
+        locations={[0, 0.52, 1]}
+        style={styles.container}
       >
-        <Animated.View
-          style={[styles.logoContainer, logoAnimatedStyle]}
-        >
-          <View style={styles.glow} />
+        <View style={styles.ambientGold} />
+        <View style={styles.ambientTerracotta} />
 
-          <Image
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : undefined}
+          style={styles.keyboard}
+        >
+          <View style={[styles.contentWrapper, styles.webShell]}>
+            <Animated.View style={[styles.logoContainer, logoAnimatedStyle]}>
+              <View style={styles.logoGlow} />
+
+              <Image
                 source={require("@/assets/images/logo.png")}
                 style={styles.logo}
-                />
-          <View style={styles.separator} />
-        </Animated.View>
-
-        <Animated.View
-          style={[cardAnimatedStyle]}
-        >
-          <BlurView
-            intensity={35}
-            tint="dark"
-            style={styles.card}
-          >
-            <Text style={styles.label}>
-              Correo electrónico
-            </Text>
-
-            <TextInput
-              placeholder="correo@ejemplo.com"
-              placeholderTextColor="#888"
-              style={styles.input}
-            />
-
-            <Text style={styles.label}>
-              Contraseña
-            </Text>
-
-            <View style={styles.passwordContainer}>
-              <TextInput
-                secureTextEntry={!showPassword}
-                placeholder="********"
-                placeholderTextColor="#888"
-                style={styles.passwordInput}
-                onFocus={() => setPasswordFocused(true)}
-                onBlur={() => setPasswordFocused(false)}
-                />
-              <TouchableOpacity
-                onPress={() =>
-                  setShowPassword(!showPassword)
-                }
-              >
-                <Text style={styles.eye}>
-                  {showPassword ? "🙈" : "👁️"}
-                </Text>
-              </TouchableOpacity>
-            </View>
-
-            <Animated.View
-              style={[
-                styles.buttonWrapper,
-                buttonAnimatedStyle,
-              ]}
-            >
-              <TouchableOpacity
-                activeOpacity={0.9}
-                style={styles.button}
-                onPressIn={() => {
-                  buttonScale.value = withSpring(0.96);
-                }}
-                onPressOut={() => {
-                  buttonScale.value = withSpring(1);
-                }}
-
-                onPress={() => router.replace("/event-details")}
-              >
-                <Text style={styles.buttonText}>
-                  Iniciar Sesión
-                </Text>
-              </TouchableOpacity>
+              />
+              <View style={styles.separator} />
             </Animated.View>
 
-            <TouchableOpacity
-              onPress={() => router.push("/register")}
-            >
-              <Text style={styles.registerText}>
-                ¿No tienes cuenta? Crear cuenta
-              </Text>
-            </TouchableOpacity>
-          </BlurView>
-        </Animated.View>
-      </KeyboardAvoidingView>
-    </LinearGradient>
+            <Animated.View style={[styles.cardWrapper, cardAnimatedStyle]}>
+              <BlurView intensity={35} tint="dark" style={styles.card}>
+                <Text style={styles.label}>Correo electrónico</Text>
+
+                <TextInput
+                  autoCapitalize="none"
+                  keyboardType="email-address"
+                  placeholder="correo@ejemplo.com"
+                  placeholderTextColor="#888"
+                  style={[styles.input, emailFocused && styles.focusedInput]}
+                  onFocus={() => setEmailFocused(true)}
+                  onBlur={() => setEmailFocused(false)}
+                />
+
+                <Text style={styles.label}>Contraseña</Text>
+
+                <View
+                  style={[
+                    styles.passwordContainer,
+                    passwordFocused && styles.focusedInput,
+                  ]}
+                >
+                  <TextInput
+                    secureTextEntry={!showPassword}
+                    placeholder="********"
+                    placeholderTextColor="#888"
+                    style={styles.passwordInput}
+                    onFocus={() => setPasswordFocused(true)}
+                    onBlur={() => setPasswordFocused(false)}
+                  />
+                  <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                    <Text style={styles.eye}>{showPassword ? "🙈" : "👁️"}</Text>
+                  </TouchableOpacity>
+                </View>
+
+                <Animated.View style={[styles.buttonWrapper, buttonAnimatedStyle]}>
+                  <TouchableOpacity
+                    activeOpacity={0.9}
+                    style={styles.button}
+                    onPressIn={() => {
+                      buttonScale.value = withSpring(0.96);
+                    }}
+                    onPressOut={() => {
+                      buttonScale.value = withSpring(1);
+                    }}
+                    onPress={() => router.replace("/event-details")}
+                  >
+                    <Text style={styles.buttonText}>Iniciar Sesión</Text>
+                  </TouchableOpacity>
+                </Animated.View>
+
+                <TouchableOpacity onPress={() => router.push("/register")}>
+                  <Text style={styles.registerText}>
+                    ¿No tienes cuenta? Crear cuenta
+                  </Text>
+                </TouchableOpacity>
+              </BlurView>
+            </Animated.View>
+          </View>
+        </KeyboardAvoidingView>
+      </LinearGradient>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+  },
 
-passwordFocused: {
-  borderWidth: 2,
-  borderColor: COLORS.gold,
-},
+  backgroundImage: {
+    opacity: 0.78,
+  },
 
   container: {
     flex: 1,
+  },
+
+  ambientGold: {
+    position: "absolute",
+    top: 80,
+    right: -90,
+    width: 220,
+    height: 220,
+    borderRadius: 999,
+    backgroundColor: "rgba(200,155,60,0.08)",
+  },
+
+  ambientTerracotta: {
+    position: "absolute",
+    bottom: -80,
+    left: -80,
+    width: 240,
+    height: 240,
+    borderRadius: 999,
+    backgroundColor: "rgba(182,90,58,0.08)",
   },
 
   keyboard: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: 25,
+    paddingHorizontal: 24,
+    paddingVertical: 36,
+  },
+
+  contentWrapper: {
+    width: "100%",
+    maxWidth: MAX_PHONE_WIDTH,
+    flex: 1,
+    justifyContent: "center",
+  },
+
+  webShell: {
+    ...(Platform.OS === "web"
+      ? {
+          minHeight: 820,
+        }
+      : {}),
   },
 
   logoContainer: {
     alignItems: "center",
-    marginBottom: 40,
+    marginBottom: 34,
   },
 
-  glow: {
+  logoGlow: {
     position: "absolute",
-    width: 180,
-    height: 180,
-    borderRadius: 90,
-    backgroundColor: "rgba(255, 255, 255, 0.15)",
+    width: 170,
+    height: 170,
+    borderRadius: 999,
+    backgroundColor: "rgba(200,155,60,0.10)",
+    opacity: 0.75,
+    transform: [{ scaleX: 1.18 }],
   },
 
- logo: {
-  width: 180,
-  height: 180,
-  marginBottom: 10,
-},
-  title: {
-    color: COLORS.white,
-    fontSize: 36,
-    fontWeight: "800",
-  },
-
-  subtitle: {
-    color: COLORS.gold,
-    fontSize: 20,
-    marginTop: 5,
-    letterSpacing: 2,
+  logo: {
+    width: Platform.OS === "web" ? 170 : 155,
+    height: Platform.OS === "web" ? 110 : 100,
+    resizeMode: "contain",
+    marginBottom: 10,
   },
 
   separator: {
-    width: 120,
+    width: 88,
     height: 2,
     backgroundColor: COLORS.gold,
-    marginTop: 18,
+    marginTop: 16,
     borderRadius: 10,
   },
 
+  cardWrapper: {
+    width: "100%",
+  },
+
   card: {
-    width: width * 0.9,
-
-    padding: 25,
-
-    borderRadius: 30,
-
+    width: "100%",
+    padding: 24,
+    borderRadius: 28,
     borderWidth: 1,
     borderColor: COLORS.glassBorder,
-
     overflow: "hidden",
-
-    backgroundColor: COLORS.glass,
+    backgroundColor: "rgba(18,18,18,0.55)",
   },
 
   label: {
@@ -244,29 +270,29 @@ passwordFocused: {
 
   input: {
     height: 56,
-
-    borderRadius: 16,
-
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: "transparent",
     paddingHorizontal: 16,
-
-    backgroundColor: "rgba(255,255,255,0.08)",
-
+    backgroundColor: "rgba(255,255,255,0.09)",
     color: COLORS.white,
   },
 
+  focusedInput: {
+    borderColor: COLORS.gold,
+    borderWidth: 1.5,
+  },
+
   passwordContainer: {
-  flexDirection: "row",
-  alignItems: "center",
-
-  backgroundColor: "rgba(255,255,255,0.08)",
-
-  borderRadius: 16,
-
-  paddingHorizontal: 16,
-
-  borderWidth: 1,
-  borderColor: "transparent",
-},
+    height: 56,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgba(255,255,255,0.09)",
+    borderRadius: 18,
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    borderColor: "transparent",
+  },
 
   passwordInput: {
     flex: 1,
@@ -284,23 +310,18 @@ passwordFocused: {
 
   button: {
     height: 58,
-
     backgroundColor: COLORS.gold,
-
-    borderRadius: 18,
-
+    borderRadius: 20,
     justifyContent: "center",
     alignItems: "center",
-
     shadowColor: COLORS.gold,
-    shadowOpacity: 0.4,
-    shadowRadius: 12,
+    shadowOpacity: 0.35,
+    shadowRadius: 14,
     shadowOffset: {
       width: 0,
-      height: 4,
+      height: 6,
     },
-
-    elevation: 6,
+    elevation: 8,
   },
 
   buttonText: {
@@ -311,11 +332,8 @@ passwordFocused: {
 
   registerText: {
     textAlign: "center",
-
     color: COLORS.goldLight,
-
     marginTop: 20,
-
     fontWeight: "600",
   },
 });

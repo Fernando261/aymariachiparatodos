@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
     paddingTop: Math.max(42, height * 0.08),
   },
   logoSection: { alignItems: "center", minHeight: 148, justifyContent: "center", width: "100%" },
-  logoImage: { width: phoneWidth < 370 ? 170 : 190, height: phoneWidth < 370 ? 104 : 118 },
+  logoImage: { width: phoneWidth < 570 ? 370 : 390, height: phoneWidth < 570 ? 304 : 318 },
   visualSection: {
     width: "100%",
     flex: 1,

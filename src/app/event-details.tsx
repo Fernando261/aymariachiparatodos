@@ -1,262 +1,471 @@
-import React, { useState } from "react";
+import React from "react";
 import {
-  Modal,
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
+  ImageBackground,
+  Platform,
   ScrollView,
-  Dimensions,
-  Alert,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
-import { router } from "expo-router";
-
-import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
+import { LinearGradient } from "expo-linear-gradient";
+import { SymbolView } from "expo-symbols";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { COLORS } from "@/constants/colors";
 
-const { width } = Dimensions.get("window");
+type SymbolName = React.ComponentProps<typeof SymbolView>["name"];
 
-const OPTIONS = [3, 4, 5, 6];
+type Category = {
+  label: string;
+  icon: SymbolName;
+};
+
+type Service = {
+  title: string;
+  subtitle: string;
+  image?: number;
+  icon?: SymbolName;
+};
+
+const MOBILE_WIDTH = 430;
+
+const CATEGORIES: Category[] = [
+  { label: "Cumpleaños", icon: "birthday.cake" },
+  { label: "Serenatas", icon: "music.mic" },
+  { label: "Bodas", icon: "heart.circle" },
+  { label: "XV Años", icon: "crown" },
+  { label: "Empresas", icon: "building.2" },
+  { label: "Más", icon: "ellipsis" },
+];
+
+const SERVICES: Service[] = [
+  {
+    title: "Mariachis",
+    subtitle: "Elige el grupo perfecto",
+    image: require("@/assets/images/mariachis/mariachi1.png"),
+  },
+  {
+    title: "Serenatas",
+    subtitle: "Sorprende a esa persona especial",
+    image: require("@/assets/images/mariachis/mariachi2.png"),
+  },
+  {
+    title: "Paquetes",
+    subtitle: "Ahorra con nuestros paquetes especiales",
+    image: require("@/assets/images/mariachis/mariachibg.png"),
+    icon: "gift",
+  },
+];
+
+const TABS = [
+  { label: "Inicio", icon: "house.fill", active: true },
+  { label: "Favoritos", icon: "heart", active: false },
+  { label: "Mis eventos", icon: "calendar", active: false },
+  { label: "Perfil", icon: "person", active: false },
+] satisfies Array<{ label: string; icon: SymbolName; active: boolean }>;
+
+function AppIcon({
+  name,
+  size = 24,
+  color = COLORS.gold,
+}: {
+  name: SymbolName;
+  size?: number;
+  color?: string;
+}) {
+  return (
+    <SymbolView
+      name={name}
+      size={size}
+      tintColor={color}
+      weight="regular"
+      resizeMode="scaleAspectFit"
+    />
+  );
+}
 
 export default function EventDetailsScreen() {
-  const [selectedMusicians, setSelectedMusicians] = useState<number | null>(null);
-
-  const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
-  const [location, setLocation] = useState("");
-
-  const handleContinue = () => {
-    if (!selectedMusicians || !date || !time || !location) {
-      Alert.alert(
-        "Información incompleta",
-        "Completa todos los campos para continuar."
-      );
-      return;
-    }
-
-    router.push({
-      pathname: "/mariachis",
-      params: {
-        musicians: selectedMusicians,
-        date,
-        time,
-        location,
-      },
-    });
-  };
-
   return (
-    <LinearGradient
-      colors={["#121212", "#1A1A1A", "#232323"]}
-      style={styles.container}
-    >
-      <ScrollView
-        contentContainerStyle={styles.content}
-        showsVerticalScrollIndicator={false}
-      >
-        <Text style={styles.title}>
-          Detalles del Evento
-        </Text>
-
-        <Text style={styles.subtitle}>
-          Cuéntanos un poco sobre tu evento para encontrar los mejores mariachis.
-        </Text>
-
-        <BlurView
-          intensity={35}
-          tint="dark"
-          style={styles.card}
-        >
-          <Text style={styles.sectionTitle}>
-            🎺 Elige la cantidad de elementos para tu mariachi:
-          </Text>
-
-          <View style={styles.grid}>
-            {OPTIONS.map((item) => (
-              <TouchableOpacity
-                key={item}
-                onPress={() => setSelectedMusicians(item)}
-                activeOpacity={0.9}
-              >
-                <View
-                  style={[
-                    styles.optionCard,
-                    selectedMusicians === item &&
-                      styles.optionCardSelected,
-                  ]}
-                >
-                  <Text
-                    style={[
-                      styles.optionText,
-                      selectedMusicians === item &&
-                        styles.optionTextSelected,
-                    ]}
-                  >
-                    {item}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            ))}
-          </View>
-
-          <Text style={styles.label}>
-            📅 Fecha del evento
-          </Text>
-
-          <TextInput
-            placeholder="Ej. 20/07/2026"
-            placeholderTextColor="#888"
-            value={date}
-            onChangeText={setDate}
-            style={styles.input}
-          />
-
-          <Text style={styles.label}>
-            🕒 Hora aproximada
-          </Text>
-
-          <TextInput
-            placeholder="Ej. 8:00 PM"
-            placeholderTextColor="#888"
-            value={time}
-            onChangeText={setTime}
-            style={styles.input}
-          />
-
-          <Text style={styles.label}>
-            📍 Ubicación
-          </Text>
-
-          <TextInput
-            placeholder="Ej. Guadalajara, Jalisco"
-            placeholderTextColor="#888"
-            value={location}
-            onChangeText={setLocation}
-            style={styles.input}
-          />
-
-          <TouchableOpacity
-            style={styles.button}
-            onPress={handleContinue}
+    <View style={styles.screen}>
+      <SafeAreaView style={styles.safeArea} edges={["top", "bottom"]}>
+        <View style={styles.appFrame}>
+          <LinearGradient
+            colors={["#050505", COLORS.black, "#080808"]}
+            locations={[0, 0.48, 1]}
+            style={styles.container}
           >
-            <Text style={styles.buttonText}>
-              Buscar Mariachis Disponibles
-            </Text>
-          </TouchableOpacity>
-        </BlurView>
-      </ScrollView>
-    </LinearGradient>
+            <View style={styles.goldGlowTop} />
+            <View style={styles.goldGlowBottom} />
+
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={styles.scrollContent}
+            >
+              <View style={styles.header}>
+                <TouchableOpacity activeOpacity={0.75} style={styles.headerButton}>
+                  <AppIcon name="line.3.horizontal" size={30} />
+                </TouchableOpacity>
+
+                <TouchableOpacity activeOpacity={0.75} style={styles.notificationButton}>
+                  <AppIcon name="bell.fill" size={30} />
+                  <View style={styles.notificationBadge}>
+                    <Text style={styles.notificationBadgeText}>1</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.heroCopy}>
+                <Text style={styles.titleWhite}>¿A dónde vas a llevar</Text>
+                <Text style={styles.titleGold}>la música hoy?</Text>
+              </View>
+
+              <BlurView intensity={25} tint="dark" style={styles.searchBox}>
+                <AppIcon name="person.3" size={25} color={COLORS.ivory} />
+                <Text style={styles.searchText}>¿Cuántos elementos para tu mariachi?</Text>
+              </BlurView>
+
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.categories}
+              >
+                {CATEGORIES.map((category) => (
+                  <TouchableOpacity
+                    key={category.label}
+                    activeOpacity={0.82}
+                    style={styles.categoryItem}
+                  >
+                    <View style={styles.categoryCircle}>
+                      <AppIcon name={category.icon} size={28} />
+                    </View>
+                    <Text style={styles.categoryLabel}>{category.label}</Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>Servicios populares</Text>
+                <TouchableOpacity activeOpacity={0.75}>
+                  <Text style={styles.seeAll}>Ver todos</Text>
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.servicesList}>
+                {SERVICES.map((service) => (
+                  <TouchableOpacity
+                    key={service.title}
+                    activeOpacity={0.88}
+                    style={styles.serviceCard}
+                  >
+                    <ImageBackground
+                      source={service.image}
+                      resizeMode="cover"
+                      style={styles.serviceImage}
+                      imageStyle={styles.serviceImageStyle}
+                    >
+                      <LinearGradient
+                        colors={[
+                          "rgba(0,0,0,0.84)",
+                          "rgba(0,0,0,0.38)",
+                          "rgba(0,0,0,0.82)",
+                        ]}
+                        start={{ x: 0, y: 0.5 }}
+                        end={{ x: 1, y: 0.5 }}
+                        style={styles.serviceOverlay}
+                      >
+                        <View style={styles.serviceTextBlock}>
+                          <Text style={styles.serviceTitle}>{service.title}</Text>
+                          <Text style={styles.serviceSubtitle}>{service.subtitle}</Text>
+                        </View>
+
+                        {service.icon ? (
+                          <View style={styles.packageIconWrap}>
+                            <AppIcon name={service.icon} size={58} />
+                          </View>
+                        ) : null}
+
+                        <View style={styles.chevronWrap}>
+                          <AppIcon name="chevron.right" size={28} color={COLORS.ivory} />
+                        </View>
+                      </LinearGradient>
+                    </ImageBackground>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </ScrollView>
+
+            <BlurView intensity={28} tint="dark" style={styles.tabBar}>
+              {TABS.map((tab) => (
+                <TouchableOpacity key={tab.label} activeOpacity={0.8} style={styles.tabItem}>
+                  <AppIcon
+                    name={tab.icon}
+                    size={30}
+                    color={tab.active ? COLORS.gold : "#787878"}
+                  />
+                  <Text style={[styles.tabLabel, tab.active && styles.tabLabelActive]}>
+                    {tab.label}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </BlurView>
+          </LinearGradient>
+        </View>
+      </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    alignItems: "center",
+    backgroundColor: "#000000",
+  },
+  safeArea: {
+    flex: 1,
+    width: "100%",
+    alignItems: "center",
+    backgroundColor: "#000000",
+  },
+  appFrame: {
+    flex: 1,
+    width: "100%",
+    maxWidth: MOBILE_WIDTH,
+    overflow: "hidden",
+    backgroundColor: COLORS.black,
+    ...Platform.select({
+      web: {
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 24 },
+        shadowOpacity: 0.42,
+        shadowRadius: 40,
+      },
+      default: {},
+    }),
+  },
   container: {
     flex: 1,
   },
-
-  content: {
-    padding: 25,
-    paddingTop: 60,
-    paddingBottom: 50,
-    alignItems: "center",
+  goldGlowTop: {
+    position: "absolute",
+    top: -130,
+    right: -120,
+    width: 260,
+    height: 260,
+    borderRadius: 130,
+    backgroundColor: "rgba(200,155,60,0.14)",
   },
-
-  title: {
-    color: COLORS.white,
-    fontSize: 32,
-    fontWeight: "800",
-    textAlign: "center",
+  goldGlowBottom: {
+    position: "absolute",
+    bottom: 70,
+    left: -150,
+    width: 250,
+    height: 250,
+    borderRadius: 125,
+    backgroundColor: "rgba(200,155,60,0.07)",
   },
-
-  subtitle: {
-    color: COLORS.gray,
-    textAlign: "center",
-    marginTop: 10,
-    marginBottom: 25,
-    lineHeight: 22,
+  scrollContent: {
+    paddingHorizontal: 12,
+    paddingTop: 12,
+    paddingBottom: 122,
   },
-
-  card: {
-    width: width * 0.92,
-    padding: 25,
-    borderRadius: 28,
-    overflow: "hidden",
-    borderWidth: 1,
-    borderColor: COLORS.glassBorder,
-  },
-
-  sectionTitle: {
-    color: COLORS.gold,
-    fontSize: 18,
-    fontWeight: "700",
-    marginBottom: 20,
-  },
-
-  grid: {
+  header: {
+    height: 40,
     flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "center",
-    gap: 12,
-    marginBottom: 25,
-  },
-
-  optionCard: {
-    width: 70,
-    height: 70,
-    borderRadius: 18,
-    justifyContent: "center",
     alignItems: "center",
-    backgroundColor: COLORS.glass,
+    justifyContent: "space-between",
+  },
+  headerButton: {
+    width: 44,
+    height: 40,
+    justifyContent: "center",
+  },
+  notificationButton: {
+    width: 44,
+    height: 40,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  notificationBadge: {
+    position: "absolute",
+    top: 0,
+    right: 3,
+    width: 17,
+    height: 17,
+    borderRadius: 9,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: COLORS.goldLight,
     borderWidth: 1,
-    borderColor: COLORS.glassBorder,
+    borderColor: "rgba(0,0,0,0.35)",
   },
-
-  optionCardSelected: {
-    borderColor: COLORS.gold,
-    borderWidth: 2,
+  notificationBadgeText: {
+    color: COLORS.black,
+    fontSize: 9,
+    fontWeight: "900",
   },
-
-  optionText: {
-    color: COLORS.white,
-    fontSize: 24,
-    fontWeight: "700",
+  heroCopy: {
+    marginTop: 14,
+    marginBottom: 28,
   },
-
-  optionTextSelected: {
+  titleWhite: {
+    color: COLORS.ivory,
+    fontSize: 27,
+    lineHeight: 36,
+    fontWeight: "600",
+    letterSpacing: -0.5,
+  },
+  titleGold: {
+    marginTop: 1,
     color: COLORS.gold,
+    fontSize: 42,
+    lineHeight: 50,
+    fontWeight: "800",
+    letterSpacing: -0.8,
+    fontFamily: Platform.select({ ios: "Georgia", android: "serif", web: "Georgia" }),
   },
-
-  label: {
-    color: COLORS.white,
-    marginBottom: 8,
-    marginTop: 15,
+  searchBox: {
+    height: 64,
+    borderRadius: 15,
+    overflow: "hidden",
+    paddingHorizontal: 21,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 15,
+    backgroundColor: "rgba(255,255,255,0.055)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.055)",
+  },
+  searchText: {
+    flex: 1,
+    color: "rgba(247,243,235,0.58)",
+    fontSize: 16,
     fontWeight: "600",
   },
-
-  input: {
-    height: 55,
-    borderRadius: 16,
-    backgroundColor: COLORS.glass,
-    color: COLORS.white,
-    paddingHorizontal: 16,
+  categories: {
+    gap: 16,
+    paddingTop: 42,
+    paddingBottom: 31,
   },
-
-  button: {
-    marginTop: 30,
-    height: 58,
-    borderRadius: 18,
-    backgroundColor: COLORS.gold,
-    justifyContent: "center",
+  categoryItem: {
+    width: 58,
     alignItems: "center",
   },
-
-  buttonText: {
-    color: COLORS.black,
-    fontSize: 16,
+  categoryCircle: {
+    width: 58,
+    height: 58,
+    borderRadius: 22,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(255,255,255,0.055)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.035)",
+  },
+  categoryLabel: {
+    marginTop: 10,
+    color: COLORS.ivory,
+    fontSize: 11,
+    fontWeight: "700",
+    textAlign: "center",
+  },
+  sectionHeader: {
+    marginBottom: 17,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  sectionTitle: {
+    color: COLORS.ivory,
+    fontSize: 19,
     fontWeight: "800",
+    letterSpacing: -0.3,
+  },
+  seeAll: {
+    color: COLORS.gold,
+    fontSize: 14,
+    fontWeight: "800",
+  },
+  servicesList: {
+    gap: 15,
+  },
+  serviceCard: {
+    height: 132,
+    borderRadius: 15,
+    overflow: "hidden",
+    backgroundColor: COLORS.blackSecondary,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.045)",
+  },
+  serviceImage: {
+    flex: 1,
+  },
+  serviceImageStyle: {
+    borderRadius: 15,
+  },
+  serviceOverlay: {
+    flex: 1,
+    paddingLeft: 24,
+    paddingRight: 19,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  serviceTextBlock: {
+    flex: 1,
+    maxWidth: 210,
+  },
+  serviceTitle: {
+    color: COLORS.ivory,
+    fontSize: 24,
+    lineHeight: 29,
+    fontWeight: "900",
+    letterSpacing: -0.4,
+  },
+  serviceSubtitle: {
+    marginTop: 5,
+    color: "rgba(247,243,235,0.82)",
+    fontSize: 15,
+    lineHeight: 21,
+    fontWeight: "600",
+  },
+  packageIconWrap: {
+    position: "absolute",
+    right: 54,
+    top: 36,
+    opacity: 0.95,
+  },
+  chevronWrap: {
+    width: 28,
+    alignItems: "flex-end",
+  },
+  tabBar: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 76,
+    overflow: "hidden",
+    paddingTop: 10,
+    paddingHorizontal: 19,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    backgroundColor: "rgba(18,18,18,0.86)",
+    borderTopWidth: 1,
+    borderTopColor: "rgba(255,255,255,0.05)",
+  },
+  tabItem: {
+    minWidth: 70,
+    alignItems: "center",
+    gap: 4,
+  },
+  tabLabel: {
+    color: "#747474",
+    fontSize: 12,
+    fontWeight: "700",
+  },
+  tabLabelActive: {
+    color: COLORS.gold,
   },
 });

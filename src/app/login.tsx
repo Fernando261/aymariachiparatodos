@@ -25,7 +25,7 @@ import Animated, {
 
 import { COLORS } from "@/constants/colors";
 
-const MAX_PHONE_WIDTH = 430;
+const MAX_LOGIN_WIDTH = 460;
 
 export default function LoginScreen() {
   const [showPassword, setShowPassword] = useState(false);
@@ -71,24 +71,19 @@ export default function LoginScreen() {
     >
       <LinearGradient
         colors={[
-          "rgba(18,18,18,0.72)",
-          "rgba(18,18,18,0.88)",
-          "rgba(0,0,0,0.96)",
+          "rgba(18,18,18,0.34)",
+          "rgba(18,18,18,0.42)",
+          "rgba(0,0,0,0.45)",
         ]}
-        locations={[0, 0.52, 1]}
+        locations={[0, 0.58, 1]}
         style={styles.container}
       >
-        <View style={styles.ambientGold} />
-        <View style={styles.ambientTerracotta} />
-
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : undefined}
           style={styles.keyboard}
         >
           <View style={[styles.contentWrapper, styles.webShell]}>
             <Animated.View style={[styles.logoContainer, logoAnimatedStyle]}>
-              <View style={styles.logoGlow} />
-
               <Image
                 source={require("@/assets/images/logo.png")}
                 style={styles.logo}
@@ -126,8 +121,16 @@ export default function LoginScreen() {
                     onFocus={() => setPasswordFocused(true)}
                     onBlur={() => setPasswordFocused(false)}
                   />
-                  <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-                    <Text style={styles.eye}>{showPassword ? "🙈" : "👁️"}</Text>
+                  <TouchableOpacity
+                    accessibilityRole="button"
+                    accessibilityLabel={
+                      showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
+                    }
+                    hitSlop={10}
+                    onPress={() => setShowPassword(!showPassword)}
+                    style={styles.passwordToggle}
+                  >
+                    <PasswordVisibilityIcon hidden={!showPassword} />
                   </TouchableOpacity>
                 </View>
 
@@ -161,82 +164,62 @@ export default function LoginScreen() {
   );
 }
 
+function PasswordVisibilityIcon({ hidden }: { hidden: boolean }) {
+  return (
+    <View style={styles.eyeIcon}>
+      <View style={styles.eyePupil} />
+      {hidden ? <View style={styles.eyeSlash} /> : null}
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   background: {
     flex: 1,
+    width: "100%",
+    height: "100%",
   },
 
   backgroundImage: {
-    opacity: 0.78,
+    width: "100%",
+    height: "100%",
   },
 
   container: {
     flex: 1,
-  },
-
-  ambientGold: {
-    position: "absolute",
-    top: 80,
-    right: -90,
-    width: 220,
-    height: 220,
-    borderRadius: 999,
-    backgroundColor: "rgba(200,155,60,0.08)",
-  },
-
-  ambientTerracotta: {
-    position: "absolute",
-    bottom: -80,
-    left: -80,
-    width: 240,
-    height: 240,
-    borderRadius: 999,
-    backgroundColor: "rgba(182,90,58,0.08)",
+    justifyContent: "center",
+    alignItems: "center",
   },
 
   keyboard: {
     flex: 1,
+    width: "100%",
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 24,
-    paddingVertical: 36,
+    paddingVertical: Platform.OS === "web" ? 44 : 32,
   },
 
   contentWrapper: {
     width: "100%",
-    maxWidth: MAX_PHONE_WIDTH,
-    flex: 1,
+    maxWidth: MAX_LOGIN_WIDTH,
     justifyContent: "center",
   },
 
   webShell: {
-    ...(Platform.OS === "web"
-      ? {
-          minHeight: 820,
-        }
-      : {}),
+    alignSelf: "center",
   },
 
   logoContainer: {
     alignItems: "center",
-    marginBottom: 34,
-  },
-
-  logoGlow: {
-    position: "absolute",
-    width: 170,
-    height: 170,
-    borderRadius: 999,
-    backgroundColor: "rgba(200,155,60,0.10)",
-    opacity: 0.75,
-    transform: [{ scaleX: 1.18 }],
+    marginBottom: 30,
   },
 
   logo: {
-    width: Platform.OS === "web" ? 170 : 155,
-    height: Platform.OS === "web" ? 110 : 100,
+    width: Platform.OS === "web" ? 190 : 165,
+    height: Platform.OS === "web" ? 122 : 106,
     resizeMode: "contain",
-    marginBottom: 10,
+    marginBottom: 8,
   },
 
   separator: {
@@ -253,12 +236,12 @@ const styles = StyleSheet.create({
 
   card: {
     width: "100%",
-    padding: 24,
-    borderRadius: 28,
+    padding: Platform.OS === "web" ? 30 : 24,
+    borderRadius: 30,
     borderWidth: 1,
-    borderColor: COLORS.glassBorder,
+    borderColor: "rgba(216,183,106,0.22)",
     overflow: "hidden",
-    backgroundColor: "rgba(18,18,18,0.55)",
+    backgroundColor: "rgba(18,18,18,0.58)",
   },
 
   label: {
@@ -272,9 +255,9 @@ const styles = StyleSheet.create({
     height: 56,
     borderRadius: 18,
     borderWidth: 1,
-    borderColor: "transparent",
+    borderColor: "rgba(255,255,255,0.08)",
     paddingHorizontal: 16,
-    backgroundColor: "rgba(255,255,255,0.09)",
+    backgroundColor: "rgba(255,255,255,0.10)",
     color: COLORS.white,
   },
 
@@ -287,11 +270,11 @@ const styles = StyleSheet.create({
     height: 56,
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(255,255,255,0.09)",
+    backgroundColor: "rgba(255,255,255,0.10)",
     borderRadius: 18,
     paddingHorizontal: 16,
     borderWidth: 1,
-    borderColor: "transparent",
+    borderColor: "rgba(255,255,255,0.08)",
   },
 
   passwordInput: {
@@ -300,8 +283,38 @@ const styles = StyleSheet.create({
     color: COLORS.white,
   },
 
-  eye: {
-    fontSize: 22,
+  passwordToggle: {
+    width: 34,
+    height: 34,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  eyeIcon: {
+    width: 24,
+    height: 15,
+    borderWidth: 1.8,
+    borderColor: COLORS.goldLight,
+    borderRadius: 14,
+    justifyContent: "center",
+    alignItems: "center",
+    transform: [{ rotate: "-8deg" }],
+  },
+
+  eyePupil: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
+    backgroundColor: COLORS.goldLight,
+  },
+
+  eyeSlash: {
+    position: "absolute",
+    width: 29,
+    height: 2,
+    borderRadius: 2,
+    backgroundColor: COLORS.goldLight,
+    transform: [{ rotate: "38deg" }],
   },
 
   buttonWrapper: {

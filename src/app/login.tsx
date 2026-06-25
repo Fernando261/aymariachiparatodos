@@ -25,7 +25,7 @@ import Animated, {
 
 import { COLORS } from "@/constants/colors";
 
-const MAX_LOGIN_WIDTH = 460;
+const MOBILE_WIDTH = 430;
 
 export default function LoginScreen() {
   const [showPassword, setShowPassword] = useState(false);
@@ -63,104 +63,117 @@ export default function LoginScreen() {
   }));
 
   return (
-    <ImageBackground
-      source={require("@/assets/images/mariachis/mariachibg.png")}
-      style={styles.background}
-      imageStyle={styles.backgroundImage}
-      resizeMode="cover"
-    >
-      <LinearGradient
-        colors={[
-          "rgba(18,18,18,0.34)",
-          "rgba(18,18,18,0.42)",
-          "rgba(0,0,0,0.45)",
-        ]}
-        locations={[0, 0.58, 1]}
-        style={styles.container}
-      >
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : undefined}
-          style={styles.keyboard}
+    <View style={styles.screen}>
+      <View style={styles.appFrame}>
+        <ImageBackground
+          source={require("@/assets/images/mariachis/mariachibg.png")}
+          style={styles.background}
+          imageStyle={styles.backgroundImage}
+          resizeMode="cover"
         >
-          <View style={[styles.contentWrapper, styles.webShell]}>
-            <Animated.View style={[styles.logoContainer, logoAnimatedStyle]}>
-              <Image
-                source={require("@/assets/images/logo.png")}
-                style={styles.logo}
-              />
-              <View style={styles.separator} />
-            </Animated.View>
-
-            <Animated.View style={[styles.cardWrapper, cardAnimatedStyle]}>
-              <BlurView intensity={35} tint="dark" style={styles.card}>
-                <Text style={styles.label}>Correo electrónico</Text>
-
-                <TextInput
-                  autoCapitalize="none"
-                  keyboardType="email-address"
-                  placeholder="correo@ejemplo.com"
-                  placeholderTextColor="#888"
-                  style={[styles.input, emailFocused && styles.focusedInput]}
-                  onFocus={() => setEmailFocused(true)}
-                  onBlur={() => setEmailFocused(false)}
-                />
-
-                <Text style={styles.label}>Contraseña</Text>
-
-                <View
-                  style={[
-                    styles.passwordContainer,
-                    passwordFocused && styles.focusedInput,
-                  ]}
+          <LinearGradient
+            colors={[
+              "rgba(18,18,18,0.34)",
+              "rgba(18,18,18,0.42)",
+              "rgba(0,0,0,0.45)",
+            ]}
+            locations={[0, 0.58, 1]}
+            style={styles.container}
+          >
+            <KeyboardAvoidingView
+              behavior={Platform.OS === "ios" ? "padding" : undefined}
+              style={styles.keyboard}
+            >
+              <View style={styles.contentWrapper}>
+                <Animated.View
+                  style={[styles.logoContainer, logoAnimatedStyle]}
                 >
-                  <TextInput
-                    secureTextEntry={!showPassword}
-                    placeholder="********"
-                    placeholderTextColor="#888"
-                    style={styles.passwordInput}
-                    onFocus={() => setPasswordFocused(true)}
-                    onBlur={() => setPasswordFocused(false)}
+                  <Image
+                    source={require("@/assets/images/logo.png")}
+                    style={styles.logo}
                   />
-                  <TouchableOpacity
-                    accessibilityRole="button"
-                    accessibilityLabel={
-                      showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
-                    }
-                    hitSlop={10}
-                    onPress={() => setShowPassword(!showPassword)}
-                    style={styles.passwordToggle}
-                  >
-                    <PasswordVisibilityIcon hidden={!showPassword} />
-                  </TouchableOpacity>
-                </View>
-
-                <Animated.View style={[styles.buttonWrapper, buttonAnimatedStyle]}>
-                  <TouchableOpacity
-                    activeOpacity={0.9}
-                    style={styles.button}
-                    onPressIn={() => {
-                      buttonScale.value = withSpring(0.96);
-                    }}
-                    onPressOut={() => {
-                      buttonScale.value = withSpring(1);
-                    }}
-                    onPress={() => router.replace("/event-details")}
-                  >
-                    <Text style={styles.buttonText}>Iniciar Sesión</Text>
-                  </TouchableOpacity>
+                  <View style={styles.separator} />
                 </Animated.View>
 
-                <TouchableOpacity onPress={() => router.push("/register")}>
-                  <Text style={styles.registerText}>
-                    ¿No tienes cuenta? Crear cuenta
-                  </Text>
-                </TouchableOpacity>
-              </BlurView>
-            </Animated.View>
-          </View>
-        </KeyboardAvoidingView>
-      </LinearGradient>
-    </ImageBackground>
+                <Animated.View style={[styles.cardWrapper, cardAnimatedStyle]}>
+                  <BlurView intensity={35} tint="dark" style={styles.card}>
+                    <Text style={styles.label}>Correo electrónico</Text>
+
+                    <TextInput
+                      autoCapitalize="none"
+                      keyboardType="email-address"
+                      placeholder="correo@ejemplo.com"
+                      placeholderTextColor="#888"
+                      style={[
+                        styles.input,
+                        emailFocused && styles.focusedInput,
+                      ]}
+                      onFocus={() => setEmailFocused(true)}
+                      onBlur={() => setEmailFocused(false)}
+                    />
+
+                    <Text style={styles.label}>Contraseña</Text>
+
+                    <View
+                      style={[
+                        styles.passwordContainer,
+                        passwordFocused && styles.focusedInput,
+                      ]}
+                    >
+                      <TextInput
+                        secureTextEntry={!showPassword}
+                        placeholder="********"
+                        placeholderTextColor="#888"
+                        style={styles.passwordInput}
+                        onFocus={() => setPasswordFocused(true)}
+                        onBlur={() => setPasswordFocused(false)}
+                      />
+                      <TouchableOpacity
+                        accessibilityRole="button"
+                        accessibilityLabel={
+                          showPassword
+                            ? "Ocultar contraseña"
+                            : "Mostrar contraseña"
+                        }
+                        hitSlop={10}
+                        onPress={() => setShowPassword(!showPassword)}
+                        style={styles.passwordToggle}
+                      >
+                        <PasswordVisibilityIcon hidden={!showPassword} />
+                      </TouchableOpacity>
+                    </View>
+
+                    <Animated.View
+                      style={[styles.buttonWrapper, buttonAnimatedStyle]}
+                    >
+                      <TouchableOpacity
+                        activeOpacity={0.9}
+                        style={styles.button}
+                        onPressIn={() => {
+                          buttonScale.value = withSpring(0.96);
+                        }}
+                        onPressOut={() => {
+                          buttonScale.value = withSpring(1);
+                        }}
+                        onPress={() => router.replace("/event-details")}
+                      >
+                        <Text style={styles.buttonText}>Iniciar Sesión</Text>
+                      </TouchableOpacity>
+                    </Animated.View>
+
+                    <TouchableOpacity onPress={() => router.push("/register")}>
+                      <Text style={styles.registerText}>
+                        ¿No tienes cuenta? Crear cuenta
+                      </Text>
+                    </TouchableOpacity>
+                  </BlurView>
+                </Animated.View>
+              </View>
+            </KeyboardAvoidingView>
+          </LinearGradient>
+        </ImageBackground>
+      </View>
+    </View>
   );
 }
 
@@ -174,6 +187,22 @@ function PasswordVisibilityIcon({ hidden }: { hidden: boolean }) {
 }
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+    backgroundColor: COLORS.black,
+  },
+
+  appFrame: {
+    flex: 1,
+    width: "100%",
+    maxWidth: Platform.OS === "web" ? MOBILE_WIDTH : "100%",
+    height: "100%",
+    alignSelf: "center",
+    overflow: "hidden",
+  },
+
   background: {
     flex: 1,
     width: "100%",
@@ -181,6 +210,7 @@ const styles = StyleSheet.create({
   },
 
   backgroundImage: {
+    position: "absolute",
     width: "100%",
     height: "100%",
   },
@@ -197,27 +227,22 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 24,
-    paddingVertical: Platform.OS === "web" ? 44 : 32,
+    paddingVertical: Platform.OS === "web" ? 28 : 32,
   },
 
   contentWrapper: {
     width: "100%",
-    maxWidth: MAX_LOGIN_WIDTH,
     justifyContent: "center",
-  },
-
-  webShell: {
-    alignSelf: "center",
   },
 
   logoContainer: {
     alignItems: "center",
-    marginBottom: 30,
+    marginBottom: 24,
   },
 
   logo: {
-    width: Platform.OS === "web" ? 190 : 165,
-    height: Platform.OS === "web" ? 122 : 106,
+    width: Platform.OS === "web" ? 220 : 190,
+    height: Platform.OS === "web" ? 120 : 110,
     resizeMode: "contain",
     marginBottom: 8,
   },
@@ -226,7 +251,7 @@ const styles = StyleSheet.create({
     width: 88,
     height: 2,
     backgroundColor: COLORS.gold,
-    marginTop: 16,
+    marginTop: 10,
     borderRadius: 10,
   },
 

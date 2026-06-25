@@ -86,7 +86,7 @@ export default function WelcomeScreen() {
             <View style={styles.visualGlow} />
             {/* Reemplazar por fondo sutil de mariachis: assets/images/welcome/mariachi-bg.png */}
             <ImageBackground
-              source={require("@/assets/images/mariachis/mariachi3.png")}
+              source={require("@/assets/images/mariachis/mariachibg.png")}
               style={styles.mariachiAtmosphere}
               imageStyle={styles.mariachiImage}
             >
@@ -97,39 +97,9 @@ export default function WelcomeScreen() {
             </ImageBackground>
 
             {/* Reemplazar por ilustración de Guadalajara: assets/images/welcome/guadalajara-line.png */}
-            <View style={styles.cityLineArt}>
-              <View style={styles.cathedralTower}>
-                <View style={styles.towerSpire} />
-                <View style={styles.towerBody}>
-                  <View style={styles.towerWindow} />
-                  <View style={styles.towerWindowSmall} />
-                </View>
-              </View>
-              <View style={styles.cathedralCenter}>
-                <View style={styles.centerCross} />
-                <View style={styles.centerDome} />
-                <View style={styles.centerBody}>
-                  <View style={styles.centerDoor} />
-                </View>
-              </View>
-              <View style={styles.cathedralTower}>
-                <View style={styles.towerSpire} />
-                <View style={styles.towerBody}>
-                  <View style={styles.towerWindow} />
-                  <View style={styles.towerWindowSmall} />
-                </View>
-              </View>
-              <View style={styles.kiosk}>
-                <View style={styles.kioskTop} />
-                <View style={styles.kioskRoof} />
-                <View style={styles.kioskColumns}>
-                  <View style={styles.kioskColumn} />
-                  <View style={styles.kioskColumn} />
-                  <View style={styles.kioskColumn} />
-                </View>
-                <View style={styles.kioskBase} />
-              </View>
-            </View>
+
+
+            
           </Animated.View>
 
           <Animated.View style={[styles.copySection, copyAnimatedStyle]}>

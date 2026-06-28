@@ -124,7 +124,6 @@ function MariachiCard({
 
   return (
     <Animated.View style={[styles.cardContainer, animatedStyle]}>
-      <View style={styles.glow} />
       <BlurView
         intensity={35}
         tint="dark"
@@ -179,8 +178,6 @@ const [modalVisible, setModalVisible] = useState(false);
       colors={["#121212", "#1A1A1A", "#232323"]}
       style={styles.container}
     >
-      <View style={styles.backgroundGlowTop} />
-<View style={styles.backgroundGlowBottom} />
       <Text style={styles.title}>
         Mariachis Disponibles
       </Text>
@@ -289,36 +286,8 @@ const [modalVisible, setModalVisible] = useState(false);
 
 const styles = StyleSheet.create({
 
-glow: {
-  position: "absolute",
-  width: 220,
-  height: 220,
-  borderRadius: 999,
-  backgroundColor: COLORS.gold,
-  opacity: 0.18,
-},
 
-backgroundGlowTop: {
-  position: "absolute",
-  top: -120,
-  left: -80,
-  width: 300,
-  height: 300,
-  borderRadius: 999,
-  backgroundColor: COLORS.gold,
-  opacity: 0.12,
-},
 
-backgroundGlowBottom: {
-  position: "absolute",
-  bottom: -100,
-  right: -80,
-  width: 280,
-  height: 280,
-  borderRadius: 999,
-  backgroundColor: COLORS.terracotta,
-  opacity: 0.15,
-},
 
   container: {
     flex: 1,

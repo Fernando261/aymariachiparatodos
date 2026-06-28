@@ -16,31 +16,46 @@ import {
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import { FontAwesome5, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import {
+  Bell,
+  Building2,
+  Cake,
+  CalendarDays,
+  ChevronDown,
+  ChevronRight,
+  Crown,
+  Gift,
+  Heart,
+  Home,
+  Menu,
+  MoreHorizontal,
+  Music,
+  Sparkles,
+  User,
+  Users,
+  type LucideIcon,
+} from "lucide-react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { COLORS } from "@/constants/colors";
 
 type CategoryLabel = "Cumpleaños" | "Serenatas" | "Bodas" | "XV Años" | "Empresas" | "Más";
-type IconFamily = "ion" | "material" | "fontAwesome5";
-
 type Category = {
   label: CategoryLabel;
-  icon: string;
-  family: IconFamily;
+  Icon: LucideIcon;
 };
 
 type Service = {
   title: string;
   subtitle: string;
   image?: number;
-  icon?: string;
+  Icon?: LucideIcon;
   type: "mariachis" | "serenades" | "packages";
 };
 
 type Tab = {
   label: string;
-  icon: React.ComponentProps<typeof Ionicons>["name"];
+  Icon: LucideIcon;
   active: boolean;
   onPress: () => void;
 };
@@ -50,12 +65,12 @@ const quantityOptions = [4, 5, 6, 7, 8, 9, 10, 12, 15];
 const backgroundImage = require("@/assets/images/mariachis/mariachibg.png");
 
 const categories: Category[] = [
-  { label: "Cumpleaños", icon: "cake-variant-outline", family: "material" },
-  { label: "Serenatas", icon: "guitar-acoustic", family: "material" },
-  { label: "Bodas", icon: "ring", family: "material" },
-  { label: "XV Años", icon: "crown-outline", family: "material" },
-  { label: "Empresas", icon: "office-building-outline", family: "material" },
-  { label: "Más", icon: "ellipsis-horizontal", family: "ion" },
+  { label: "Cumpleaños", Icon: Cake },
+  { label: "Serenatas", Icon: Music },
+  { label: "Bodas", Icon: Heart },
+  { label: "XV Años", Icon: Crown },
+  { label: "Empresas", Icon: Building2 },
+  { label: "Más", Icon: MoreHorizontal },
 ];
 
 const serviceImages = {
@@ -68,40 +83,39 @@ const servicesByCategory: Record<CategoryLabel, Service[]> = {
   Cumpleaños: [
     { title: "Mariachis", subtitle: "Elige el grupo perfecto", image: serviceImages.mariachis, type: "mariachis" },
     { title: "Serenatas", subtitle: "Sorprende a esa persona especial", image: serviceImages.serenades, type: "serenades" },
-    { title: "Paquetes", subtitle: "Ahorra con nuestros paquetes especiales", image: serviceImages.packages, icon: "gift-outline", type: "packages" },
+    { title: "Paquetes", subtitle: "Ahorra con nuestros paquetes especiales", image: serviceImages.packages, Icon: Gift, type: "packages" },
   ],
   Serenatas: [
     { title: "Mariachis", subtitle: "Elige el grupo perfecto", image: serviceImages.mariachis, type: "mariachis" },
     { title: "Serenatas", subtitle: "Sorprende a esa persona especial", image: serviceImages.serenades, type: "serenades" },
-    { title: "Paquetes", subtitle: "Ahorra con nuestros paquetes especiales", image: serviceImages.packages, icon: "gift-outline", type: "packages" },
+    { title: "Paquetes", subtitle: "Ahorra con nuestros paquetes especiales", image: serviceImages.packages, Icon: Gift, type: "packages" },
   ],
   Bodas: [
     { title: "Mariachis", subtitle: "Elige el grupo perfecto", image: serviceImages.mariachis, type: "mariachis" },
     { title: "Serenatas", subtitle: "Sorprende a esa persona especial", image: serviceImages.serenades, type: "serenades" },
-    { title: "Paquetes", subtitle: "Ahorra con nuestros paquetes especiales", image: serviceImages.packages, icon: "gift-outline", type: "packages" },
+    { title: "Paquetes", subtitle: "Ahorra con nuestros paquetes especiales", image: serviceImages.packages, Icon: Gift, type: "packages" },
   ],
   "XV Años": [
     { title: "Mariachis", subtitle: "Elige el grupo perfecto", image: serviceImages.mariachis, type: "mariachis" },
     { title: "Serenatas", subtitle: "Sorprende a esa persona especial", image: serviceImages.serenades, type: "serenades" },
-    { title: "Paquetes", subtitle: "Ahorra con nuestros paquetes especiales", image: serviceImages.packages, icon: "gift-outline", type: "packages" },
+    { title: "Paquetes", subtitle: "Ahorra con nuestros paquetes especiales", image: serviceImages.packages, Icon: Gift, type: "packages" },
   ],
   Empresas: [
     { title: "Mariachis", subtitle: "Elige el grupo perfecto", image: serviceImages.mariachis, type: "mariachis" },
     { title: "Serenatas", subtitle: "Sorprende a esa persona especial", image: serviceImages.serenades, type: "serenades" },
-    { title: "Paquetes", subtitle: "Ahorra con nuestros paquetes especiales", image: serviceImages.packages, icon: "gift-outline", type: "packages" },
+    { title: "Paquetes", subtitle: "Ahorra con nuestros paquetes especiales", image: serviceImages.packages, Icon: Gift, type: "packages" },
   ],
   Más: [
     { title: "Mariachis", subtitle: "Elige el grupo perfecto", image: serviceImages.mariachis, type: "mariachis" },
     { title: "Serenatas", subtitle: "Sorprende a esa persona especial", image: serviceImages.serenades, type: "serenades" },
-    { title: "Paquetes", subtitle: "Ahorra con nuestros paquetes especiales", image: serviceImages.packages, icon: "gift-outline", type: "packages" },
+    { title: "Paquetes", subtitle: "Ahorra con nuestros paquetes especiales", image: serviceImages.packages, Icon: Gift, type: "packages" },
   ],
 };
 
 function CategoryIcon({ category, active }: { category: Category; active: boolean }) {
   const color = active ? COLORS.black : COLORS.gold;
-  if (category.family === "ion") return <Ionicons name={category.icon as React.ComponentProps<typeof Ionicons>["name"]} size={25} color={color} />;
-  if (category.family === "fontAwesome5") return <FontAwesome5 name={category.icon as React.ComponentProps<typeof FontAwesome5>["name"]} size={23} color={color} />;
-  return <MaterialCommunityIcons name={category.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]} size={28} color={color} />;
+  const Icon = category.Icon;
+  return <Icon size={24} color={color} strokeWidth={2.2} />;
 }
 
 export default function EventDetailsScreen() {
@@ -112,10 +126,10 @@ export default function EventDetailsScreen() {
 
   const tabs: Tab[] = useMemo(
     () => [
-      { label: "Inicio", icon: "home", active: true, onPress: () => router.replace("/event-details") },
-      { label: "Favoritos", icon: "heart-outline", active: false, onPress: () => router.push("/favorites") },
-      { label: "Mis eventos", icon: "calendar-outline", active: false, onPress: () => router.push("/my-events") },
-      { label: "Perfil", icon: "person-outline", active: false, onPress: () => router.push("/profile") },
+      { label: "Inicio", Icon: Home, active: true, onPress: () => router.replace("/event-details") },
+      { label: "Favoritos", Icon: Heart, active: false, onPress: () => router.push("/favorites") },
+      { label: "Mis eventos", Icon: CalendarDays, active: false, onPress: () => router.push("/my-events") },
+      { label: "Perfil", Icon: User, active: false, onPress: () => router.push("/profile") },
     ],
     []
   );
@@ -150,10 +164,10 @@ export default function EventDetailsScreen() {
           <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
             <View style={styles.header}>
               <TouchableOpacity activeOpacity={0.75} style={styles.headerButton}>
-                <Ionicons name="menu" size={30} color={COLORS.gold} />
+                <Menu size={28} color={COLORS.gold} strokeWidth={2.2} />
               </TouchableOpacity>
               <TouchableOpacity activeOpacity={0.75} style={styles.notificationButton}>
-                <Ionicons name="notifications" size={28} color={COLORS.gold} />
+                <Bell size={26} color={COLORS.gold} strokeWidth={2.2} />
                 <View style={styles.notificationBadge} />
               </TouchableOpacity>
             </View>
@@ -167,11 +181,11 @@ export default function EventDetailsScreen() {
 
             <TouchableOpacity activeOpacity={0.86} onPress={() => setQuantityModalVisible(true)}>
               <BlurView intensity={28} tint="dark" style={styles.searchBox}>
-                <MaterialCommunityIcons name="account-music-outline" size={27} color={COLORS.ivory} />
+                <Users size={22} color={COLORS.white} strokeWidth={2.2} />
                 <Text style={[styles.searchText, selectedQuantity !== null && styles.searchTextSelected]}>
                   {selectedQuantity ? `${selectedQuantity} elementos seleccionados` : "¿Cuántos elementos para tu mariachi?"}
                 </Text>
-                <Ionicons name="chevron-down" size={20} color={COLORS.gold} />
+                <ChevronDown size={20} color={COLORS.gold} strokeWidth={2.2} />
               </BlurView>
             </TouchableOpacity>
 
@@ -207,8 +221,10 @@ export default function EventDetailsScreen() {
                         <Text style={styles.serviceTitle}>{service.title}</Text>
                         <Text style={styles.serviceSubtitle}>{service.subtitle}</Text>
                       </View>
-                      {service.icon ? <MaterialCommunityIcons name={service.icon as React.ComponentProps<typeof MaterialCommunityIcons>["name"]} size={48} color={COLORS.goldLight} style={styles.packageIcon} /> : null}
-                      <View style={styles.chevronWrap}><Ionicons name="arrow-forward" size={23} color={COLORS.ivory} /></View>
+                      {service.Icon ? <service.Icon size={42} color={COLORS.gold} strokeWidth={1.8} style={styles.packageIcon} /> : null}
+                      {service.type === "mariachis" ? <Music size={26} color={COLORS.gold} strokeWidth={2} style={styles.serviceIcon} /> : null}
+                      {service.type === "serenades" ? <Sparkles size={26} color={COLORS.gold} strokeWidth={2} style={styles.serviceIcon} /> : null}
+                      <View style={styles.chevronWrap}><ChevronRight size={24} color={COLORS.white} strokeWidth={2.2} /></View>
                     </LinearGradient>
                   </ImageBackground>
                 </TouchableOpacity>
@@ -219,7 +235,7 @@ export default function EventDetailsScreen() {
           <BlurView intensity={34} tint="dark" style={styles.tabBar}>
             {tabs.map((tab) => (
               <TouchableOpacity key={tab.label} activeOpacity={0.8} style={styles.tabItem} onPress={tab.onPress}>
-                <Ionicons name={tab.icon} size={25} color={tab.active ? COLORS.gold : COLORS.gray} />
+                <tab.Icon size={24} color={tab.active ? COLORS.gold : COLORS.gray} strokeWidth={2.2} />
                 <Text style={[styles.tabLabel, tab.active && styles.tabLabelActive]}>{tab.label}</Text>
               </TouchableOpacity>
             ))}
@@ -233,7 +249,7 @@ export default function EventDetailsScreen() {
             <BlurView intensity={48} tint="dark" style={styles.quantityBlur}>
               <View style={styles.sheetHandle} />
               <View style={styles.quantityTitleRow}>
-                <MaterialCommunityIcons name="account-music-outline" size={28} color={COLORS.gold} />
+                <Music size={28} color={COLORS.gold} strokeWidth={2.2} />
                 <Text style={styles.quantityTitle}>Selecciona la cantidad de elementos</Text>
               </View>
               <View style={styles.quantityGrid}>
@@ -294,7 +310,8 @@ const styles = StyleSheet.create({
   serviceTextBlock: { flex: 1, maxWidth: 240 },
   serviceTitle: { color: COLORS.ivory, fontSize: 24, lineHeight: 29, fontWeight: "900", letterSpacing: -0.45 },
   serviceSubtitle: { marginTop: 6, color: "rgba(247,243,235,0.82)", fontSize: 14.5, lineHeight: 20, fontWeight: "600" },
-  packageIcon: { position: "absolute", right: 58, top: 42, opacity: 0.9 },
+  packageIcon: { position: "absolute", right: 58, top: 46, opacity: 0.95 },
+  serviceIcon: { position: "absolute", right: 64, top: 55, opacity: 0.92 },
   chevronWrap: { width: 36, height: 36, borderRadius: 13, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(255,255,255,0.1)", borderWidth: 1, borderColor: "rgba(255,255,255,0.14)" },
   tabBar: { position: "absolute", left: 0, right: 0, bottom: 0, height: 80, overflow: "hidden", paddingTop: 11, paddingHorizontal: 12, flexDirection: "row", justifyContent: "space-between", backgroundColor: "rgba(18,18,18,0.86)", borderTopWidth: 1, borderTopColor: "rgba(216,183,106,0.2)" },
   tabItem: { minWidth: 74, alignItems: "center", gap: 5 },

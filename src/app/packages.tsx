@@ -4,7 +4,7 @@ import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from "react
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import { ArrowLeft, Gift } from "lucide-react-native";
+import { ChevronRightIcon, GiftIcon } from "@/components/AppIcons";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { COLORS } from "@/constants/colors";
@@ -27,7 +27,7 @@ export default function TemporaryPremiumScreen() {
 
           <View style={styles.content}>
             <View style={styles.iconCard}>
-              <Gift size={42} color={COLORS.gold} strokeWidth={1.8} />
+              <GiftIcon size={42} color={COLORS.gold} strokeWidth={1.8} />
             </View>
             <Text style={styles.kicker}>¡Ay! Mariachi Para Todos</Text>
             <Text style={styles.title}>{CONTENT.title}</Text>
@@ -35,7 +35,7 @@ export default function TemporaryPremiumScreen() {
 
             <TouchableOpacity activeOpacity={0.86} onPress={() => router.back()}>
               <BlurView intensity={28} tint="dark" style={styles.backButton}>
-                <ArrowLeft size={18} color={COLORS.gold} strokeWidth={2.2} />
+                <View style={styles.backIcon}><ChevronRightIcon size={18} color={COLORS.gold} strokeWidth={2.2} /></View>
                 <Text style={styles.backButtonText}>Volver</Text>
               </BlurView>
             </TouchableOpacity>
@@ -59,5 +59,6 @@ const styles = StyleSheet.create({
   title: { color: COLORS.ivory, fontSize: 42, lineHeight: 48, fontWeight: "900", textAlign: "center", fontFamily: Platform.select({ ios: "Georgia", android: "serif", web: "Georgia" }) },
   subtitle: { marginTop: 16, color: "rgba(247,243,235,0.76)", fontSize: 17, lineHeight: 25, fontWeight: "600", textAlign: "center" },
   backButton: { marginTop: 34, height: 56, minWidth: 170, borderRadius: 18, flexDirection: "row", gap: 9, alignItems: "center", justifyContent: "center", overflow: "hidden", backgroundColor: "rgba(255,255,255,0.075)", borderWidth: 1, borderColor: "rgba(216,183,106,0.34)" },
+  backIcon: { transform: [{ rotate: "180deg" }] },
   backButtonText: { color: COLORS.gold, fontSize: 16, fontWeight: "900" },
 });

@@ -17,45 +17,45 @@ import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import {
-  Bell,
-  Building2,
-  Cake,
-  CalendarDays,
-  ChevronDown,
-  ChevronRight,
-  Crown,
-  Gift,
-  Heart,
-  Home,
-  Menu,
-  MoreHorizontal,
-  Music,
-  Sparkles,
-  User,
-  Users,
-  type LucideIcon,
-} from "lucide-react-native";
+  BellIcon,
+  BuildingIcon,
+  CakeIcon,
+  CalendarIcon,
+  ChevronRightIcon,
+  CrownIcon,
+  GiftIcon,
+  HeartIcon,
+  HomeIcon,
+  MenuIcon,
+  MoreIcon,
+  MusicIcon,
+  SparklesIcon,
+  UserIcon,
+  UsersIcon,
+} from "@/components/AppIcons";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { COLORS } from "@/constants/colors";
 
 type CategoryLabel = "Cumpleaños" | "Serenatas" | "Bodas" | "XV Años" | "Empresas" | "Más";
+type IconComponent = (props: { size?: number; color?: string; strokeWidth?: number }) => React.ReactElement;
+
 type Category = {
   label: CategoryLabel;
-  Icon: LucideIcon;
+  Icon: IconComponent;
 };
 
 type Service = {
   title: string;
   subtitle: string;
   image?: number;
-  Icon?: LucideIcon;
+  Icon?: IconComponent;
   type: "mariachis" | "serenades" | "packages";
 };
 
 type Tab = {
   label: string;
-  Icon: LucideIcon;
+  Icon: IconComponent;
   active: boolean;
   onPress: () => void;
 };
@@ -65,12 +65,12 @@ const quantityOptions = [4, 5, 6, 7, 8, 9, 10, 12, 15];
 const backgroundImage = require("@/assets/images/mariachis/mariachibg.png");
 
 const categories: Category[] = [
-  { label: "Cumpleaños", Icon: Cake },
-  { label: "Serenatas", Icon: Music },
-  { label: "Bodas", Icon: Heart },
-  { label: "XV Años", Icon: Crown },
-  { label: "Empresas", Icon: Building2 },
-  { label: "Más", Icon: MoreHorizontal },
+  { label: "Cumpleaños", Icon: CakeIcon },
+  { label: "Serenatas", Icon: MusicIcon },
+  { label: "Bodas", Icon: HeartIcon },
+  { label: "XV Años", Icon: CrownIcon },
+  { label: "Empresas", Icon: BuildingIcon },
+  { label: "Más", Icon: MoreIcon },
 ];
 
 const serviceImages = {
@@ -83,37 +83,37 @@ const servicesByCategory: Record<CategoryLabel, Service[]> = {
   Cumpleaños: [
     { title: "Mariachis", subtitle: "Elige el grupo perfecto", image: serviceImages.mariachis, type: "mariachis" },
     { title: "Serenatas", subtitle: "Sorprende a esa persona especial", image: serviceImages.serenades, type: "serenades" },
-    { title: "Paquetes", subtitle: "Ahorra con nuestros paquetes especiales", image: serviceImages.packages, Icon: Gift, type: "packages" },
+    { title: "Paquetes", subtitle: "Ahorra con nuestros paquetes especiales", image: serviceImages.packages, Icon: GiftIcon, type: "packages" },
   ],
   Serenatas: [
     { title: "Mariachis", subtitle: "Elige el grupo perfecto", image: serviceImages.mariachis, type: "mariachis" },
     { title: "Serenatas", subtitle: "Sorprende a esa persona especial", image: serviceImages.serenades, type: "serenades" },
-    { title: "Paquetes", subtitle: "Ahorra con nuestros paquetes especiales", image: serviceImages.packages, Icon: Gift, type: "packages" },
+    { title: "Paquetes", subtitle: "Ahorra con nuestros paquetes especiales", image: serviceImages.packages, Icon: GiftIcon, type: "packages" },
   ],
   Bodas: [
     { title: "Mariachis", subtitle: "Elige el grupo perfecto", image: serviceImages.mariachis, type: "mariachis" },
     { title: "Serenatas", subtitle: "Sorprende a esa persona especial", image: serviceImages.serenades, type: "serenades" },
-    { title: "Paquetes", subtitle: "Ahorra con nuestros paquetes especiales", image: serviceImages.packages, Icon: Gift, type: "packages" },
+    { title: "Paquetes", subtitle: "Ahorra con nuestros paquetes especiales", image: serviceImages.packages, Icon: GiftIcon, type: "packages" },
   ],
   "XV Años": [
     { title: "Mariachis", subtitle: "Elige el grupo perfecto", image: serviceImages.mariachis, type: "mariachis" },
     { title: "Serenatas", subtitle: "Sorprende a esa persona especial", image: serviceImages.serenades, type: "serenades" },
-    { title: "Paquetes", subtitle: "Ahorra con nuestros paquetes especiales", image: serviceImages.packages, Icon: Gift, type: "packages" },
+    { title: "Paquetes", subtitle: "Ahorra con nuestros paquetes especiales", image: serviceImages.packages, Icon: GiftIcon, type: "packages" },
   ],
   Empresas: [
     { title: "Mariachis", subtitle: "Elige el grupo perfecto", image: serviceImages.mariachis, type: "mariachis" },
     { title: "Serenatas", subtitle: "Sorprende a esa persona especial", image: serviceImages.serenades, type: "serenades" },
-    { title: "Paquetes", subtitle: "Ahorra con nuestros paquetes especiales", image: serviceImages.packages, Icon: Gift, type: "packages" },
+    { title: "Paquetes", subtitle: "Ahorra con nuestros paquetes especiales", image: serviceImages.packages, Icon: GiftIcon, type: "packages" },
   ],
   Más: [
     { title: "Mariachis", subtitle: "Elige el grupo perfecto", image: serviceImages.mariachis, type: "mariachis" },
     { title: "Serenatas", subtitle: "Sorprende a esa persona especial", image: serviceImages.serenades, type: "serenades" },
-    { title: "Paquetes", subtitle: "Ahorra con nuestros paquetes especiales", image: serviceImages.packages, Icon: Gift, type: "packages" },
+    { title: "Paquetes", subtitle: "Ahorra con nuestros paquetes especiales", image: serviceImages.packages, Icon: GiftIcon, type: "packages" },
   ],
 };
 
 function CategoryIcon({ category, active }: { category: Category; active: boolean }) {
-  const color = active ? COLORS.black : COLORS.gold;
+  const color = COLORS.gold;
   const Icon = category.Icon;
   return <Icon size={24} color={color} strokeWidth={2.2} />;
 }
@@ -126,10 +126,10 @@ export default function EventDetailsScreen() {
 
   const tabs: Tab[] = useMemo(
     () => [
-      { label: "Inicio", Icon: Home, active: true, onPress: () => router.replace("/event-details") },
-      { label: "Favoritos", Icon: Heart, active: false, onPress: () => router.push("/favorites") },
-      { label: "Mis eventos", Icon: CalendarDays, active: false, onPress: () => router.push("/my-events") },
-      { label: "Perfil", Icon: User, active: false, onPress: () => router.push("/profile") },
+      { label: "Inicio", Icon: HomeIcon, active: true, onPress: () => router.replace("/event-details") },
+      { label: "Favoritos", Icon: HeartIcon, active: false, onPress: () => router.push("/favorites") },
+      { label: "Mis eventos", Icon: CalendarIcon, active: false, onPress: () => router.push("/my-events") },
+      { label: "Perfil", Icon: UserIcon, active: false, onPress: () => router.push("/profile") },
     ],
     []
   );
@@ -164,10 +164,10 @@ export default function EventDetailsScreen() {
           <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
             <View style={styles.header}>
               <TouchableOpacity activeOpacity={0.75} style={styles.headerButton}>
-                <Menu size={28} color={COLORS.gold} strokeWidth={2.2} />
+                <MenuIcon size={28} color={COLORS.gold} strokeWidth={2.2} />
               </TouchableOpacity>
               <TouchableOpacity activeOpacity={0.75} style={styles.notificationButton}>
-                <Bell size={26} color={COLORS.gold} strokeWidth={2.2} />
+                <BellIcon size={26} color={COLORS.gold} strokeWidth={2.2} />
                 <View style={styles.notificationBadge} />
               </TouchableOpacity>
             </View>
@@ -181,11 +181,11 @@ export default function EventDetailsScreen() {
 
             <TouchableOpacity activeOpacity={0.86} onPress={() => setQuantityModalVisible(true)}>
               <BlurView intensity={28} tint="dark" style={styles.searchBox}>
-                <Users size={22} color={COLORS.white} strokeWidth={2.2} />
+                <UsersIcon size={22} color={COLORS.white} strokeWidth={2.2} />
                 <Text style={[styles.searchText, selectedQuantity !== null && styles.searchTextSelected]}>
                   {selectedQuantity ? `${selectedQuantity} elementos seleccionados` : "¿Cuántos elementos para tu mariachi?"}
                 </Text>
-                <ChevronDown size={20} color={COLORS.gold} strokeWidth={2.2} />
+                <ChevronRightIcon size={20} color={COLORS.gold} strokeWidth={2.2} />
               </BlurView>
             </TouchableOpacity>
 
@@ -221,10 +221,10 @@ export default function EventDetailsScreen() {
                         <Text style={styles.serviceTitle}>{service.title}</Text>
                         <Text style={styles.serviceSubtitle}>{service.subtitle}</Text>
                       </View>
-                      {service.Icon ? <service.Icon size={42} color={COLORS.gold} strokeWidth={1.8} style={styles.packageIcon} /> : null}
-                      {service.type === "mariachis" ? <Music size={26} color={COLORS.gold} strokeWidth={2} style={styles.serviceIcon} /> : null}
-                      {service.type === "serenades" ? <Sparkles size={26} color={COLORS.gold} strokeWidth={2} style={styles.serviceIcon} /> : null}
-                      <View style={styles.chevronWrap}><ChevronRight size={24} color={COLORS.white} strokeWidth={2.2} /></View>
+                      {service.Icon ? <View style={styles.packageIcon}><service.Icon size={42} color={COLORS.gold} strokeWidth={1.8} /></View> : null}
+                      {service.type === "mariachis" ? <View style={styles.serviceIcon}><MusicIcon size={26} color={COLORS.gold} strokeWidth={2} /></View> : null}
+                      {service.type === "serenades" ? <View style={styles.serviceIcon}><SparklesIcon size={26} color={COLORS.gold} strokeWidth={2} /></View> : null}
+                      <View style={styles.chevronWrap}><ChevronRightIcon size={24} color={COLORS.white} strokeWidth={2.2} /></View>
                     </LinearGradient>
                   </ImageBackground>
                 </TouchableOpacity>
@@ -249,7 +249,7 @@ export default function EventDetailsScreen() {
             <BlurView intensity={48} tint="dark" style={styles.quantityBlur}>
               <View style={styles.sheetHandle} />
               <View style={styles.quantityTitleRow}>
-                <Music size={28} color={COLORS.gold} strokeWidth={2.2} />
+                <MusicIcon size={28} color={COLORS.gold} strokeWidth={2.2} />
                 <Text style={styles.quantityTitle}>Selecciona la cantidad de elementos</Text>
               </View>
               <View style={styles.quantityGrid}>
@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
   categories: { gap: 14, paddingTop: 30, paddingBottom: 28 },
   categoryItem: { width: 64, alignItems: "center" },
   categoryCircle: { width: 58, height: 58, borderRadius: 21, alignItems: "center", justifyContent: "center", backgroundColor: COLORS.glass, borderWidth: 1, borderColor: COLORS.glassBorder },
-  categoryCircleActive: { backgroundColor: "rgba(200,155,60,0.92)", borderColor: COLORS.goldLight },
+  categoryCircleActive: { backgroundColor: "rgba(216,183,106,0.16)", borderColor: COLORS.gold },
   categoryLabel: { marginTop: 9, color: "rgba(247,243,235,0.78)", fontSize: 10.5, fontWeight: "800", textAlign: "center" },
   categoryLabelActive: { color: COLORS.goldLight },
   sectionHeader: { marginBottom: 16, flexDirection: "row", alignItems: "flex-end", justifyContent: "space-between" },

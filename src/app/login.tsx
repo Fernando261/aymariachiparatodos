@@ -23,6 +23,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
+import { EyeIcon, EyeOffIcon } from "@/components/AppIcons";
 import { COLORS } from "@/constants/colors";
 
 const MOBILE_WIDTH = 430;
@@ -139,7 +140,7 @@ export default function LoginScreen() {
                         onPress={() => setShowPassword(!showPassword)}
                         style={styles.passwordToggle}
                       >
-                        <PasswordVisibilityIcon hidden={!showPassword} />
+                        {showPassword ? <EyeOffIcon size={22} color={COLORS.goldLight} strokeWidth={2} /> : <EyeIcon size={22} color={COLORS.goldLight} strokeWidth={2} />}
                       </TouchableOpacity>
                     </View>
 
@@ -173,15 +174,6 @@ export default function LoginScreen() {
           </LinearGradient>
         </ImageBackground>
       </View>
-    </View>
-  );
-}
-
-function PasswordVisibilityIcon({ hidden }: { hidden: boolean }) {
-  return (
-    <View style={styles.eyeIcon}>
-      <View style={styles.eyePupil} />
-      {hidden ? <View style={styles.eyeSlash} /> : null}
     </View>
   );
 }
@@ -315,32 +307,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 
-  eyeIcon: {
-    width: 24,
-    height: 15,
-    borderWidth: 1.8,
-    borderColor: COLORS.goldLight,
-    borderRadius: 14,
-    justifyContent: "center",
-    alignItems: "center",
-    transform: [{ rotate: "-8deg" }],
-  },
-
-  eyePupil: {
-    width: 7,
-    height: 7,
-    borderRadius: 4,
-    backgroundColor: COLORS.goldLight,
-  },
-
-  eyeSlash: {
-    position: "absolute",
-    width: 29,
-    height: 2,
-    borderRadius: 2,
-    backgroundColor: COLORS.goldLight,
-    transform: [{ rotate: "38deg" }],
-  },
 
   buttonWrapper: {
     marginTop: 25,

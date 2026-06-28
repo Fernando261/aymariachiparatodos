@@ -4,7 +4,7 @@ import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from "react
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { ArrowLeft, Gift } from "lucide-react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { COLORS } from "@/constants/colors";
@@ -12,7 +12,7 @@ import { COLORS } from "@/constants/colors";
 const MOBILE_WIDTH = 430;
 const backgroundImage = require("@/assets/images/mariachis/mariachibg.png");
 
-const CONTENT = {"title": "Paquetes", "subtitle": "Ahorra con experiencias especiales listas para celebraciones memorables.", "icon": "gift-outline"};
+const CONTENT = {"title": "Paquetes", "subtitle": "Ahorra con experiencias especiales listas para celebraciones memorables."};
 
 export default function TemporaryPremiumScreen() {
   return (
@@ -27,7 +27,7 @@ export default function TemporaryPremiumScreen() {
 
           <View style={styles.content}>
             <View style={styles.iconCard}>
-              <MaterialCommunityIcons name={CONTENT.icon} size={42} color={COLORS.gold} />
+              <Gift size={42} color={COLORS.gold} strokeWidth={1.8} />
             </View>
             <Text style={styles.kicker}>¡Ay! Mariachi Para Todos</Text>
             <Text style={styles.title}>{CONTENT.title}</Text>
@@ -35,7 +35,7 @@ export default function TemporaryPremiumScreen() {
 
             <TouchableOpacity activeOpacity={0.86} onPress={() => router.back()}>
               <BlurView intensity={28} tint="dark" style={styles.backButton}>
-                <Ionicons name="arrow-back" size={18} color={COLORS.gold} />
+                <ArrowLeft size={18} color={COLORS.gold} strokeWidth={2.2} />
                 <Text style={styles.backButtonText}>Volver</Text>
               </BlurView>
             </TouchableOpacity>

@@ -139,17 +139,43 @@ function EventCard({ item }: { item: EventItem }) {
   const tone = getStatusTone(item.paymentStatus);
   return (
     <TouchableOpacity activeOpacity={0.88} style={styles.card} onPress={() => openEvent(item)}>
-      <ImageBackground source={item.image} resizeMode="cover" style={styles.cardImage} imageStyle={styles.cardImageStyle}><LinearGradient colors={["rgba(0,0,0,0.04)", "rgba(0,0,0,0.58)"]} style={styles.imageOverlay} /></ImageBackground>
-      <View style={styles.dateBox}><Text style={styles.dateName}>{item.dayName}</Text><Text style={styles.dateDay}>{item.day}</Text><Text style={styles.dateMonth}>{item.month}</Text></View>
-      <View style={styles.cardBody}>
-        <Text numberOfLines={1} style={styles.cardTitle}>{item.title}</Text>
-        <View style={styles.detailRow}><ClockIcon size={17} color={COLORS.gray} strokeWidth={2} /><Text style={styles.detailText}>{item.time}</Text></View>
-        <View style={styles.detailRow}><LocationIcon size={17} color={COLORS.gray} strokeWidth={2} /><Text numberOfLines={1} style={styles.detailText}>{item.location}</Text></View>
-        <View style={styles.detailRow}><UsersIcon size={17} color={COLORS.gray} strokeWidth={2} /><Text style={styles.detailText}>{item.musicians}</Text></View>
+      <View style={styles.cardMainRow}>
+        <ImageBackground source={item.image} resizeMode="cover" style={styles.cardImage} imageStyle={styles.cardImageStyle}>
+          <LinearGradient colors={["rgba(0,0,0,0.04)", "rgba(0,0,0,0.58)"]} style={styles.imageOverlay} />
+        </ImageBackground>
+
+        <View style={styles.dateBox}>
+          <Text style={styles.dateName}>{item.dayName}</Text>
+          <Text style={styles.dateDay}>{item.day}</Text>
+          <Text style={styles.dateMonth}>{item.month}</Text>
+        </View>
+
+        <View style={styles.cardBody}>
+          <Text numberOfLines={1} ellipsizeMode="tail" style={styles.cardTitle}>{item.title}</Text>
+          <View style={styles.detailRow}>
+            <ClockIcon size={17} color={COLORS.gray} strokeWidth={2} />
+            <Text numberOfLines={1} style={styles.detailText}>{item.time}</Text>
+          </View>
+          <View style={styles.detailRow}>
+            <LocationIcon size={17} color={COLORS.gray} strokeWidth={2} />
+            <Text numberOfLines={1} ellipsizeMode="tail" style={styles.detailText}>{item.location}</Text>
+          </View>
+          <View style={styles.detailRow}>
+            <UsersIcon size={17} color={COLORS.gray} strokeWidth={2} />
+            <Text numberOfLines={1} style={styles.detailText}>{item.musicians}</Text>
+          </View>
+        </View>
       </View>
-      <View style={styles.actionColumn}>
-        <View style={[styles.statusBadge, { borderColor: tone.border, backgroundColor: tone.bg }]}><CheckCircleIcon size={15} color={tone.color} strokeWidth={2} /><Text style={[styles.statusText, { color: tone.color }]}>{item.paymentStatus}</Text></View>
-        <TouchableOpacity activeOpacity={0.84} style={styles.actionButton} onPress={() => openEvent(item)}><Text style={styles.actionText}>{item.action}</Text><ChevronRightIcon size={18} color={COLORS.goldLight} strokeWidth={2.3} /></TouchableOpacity>
+
+      <View style={styles.actionRow}>
+        <View style={[styles.statusBadge, { borderColor: tone.border, backgroundColor: tone.bg }]}>
+          <CheckCircleIcon size={15} color={tone.color} strokeWidth={2} />
+          <Text numberOfLines={1} style={[styles.statusText, { color: tone.color }]}>{item.paymentStatus}</Text>
+        </View>
+        <TouchableOpacity activeOpacity={0.84} style={styles.actionButton} onPress={() => openEvent(item)}>
+          <Text numberOfLines={2} style={styles.actionText}>{item.action}</Text>
+          <ChevronRightIcon size={18} color={COLORS.goldLight} strokeWidth={2.3} />
+        </TouchableOpacity>
       </View>
     </TouchableOpacity>
   );
@@ -171,7 +197,7 @@ const styles = StyleSheet.create({
   dimLayer: { ...StyleSheet.absoluteFill, backgroundColor: "rgba(0,0,0,0.36)" },
   goldLineTop: { position: "absolute", top: 92, left: 18, right: 18, height: 1, backgroundColor: "rgba(216,183,106,0.2)" },
   goldLineBottom: { position: "absolute", bottom: 87, left: 28, right: 28, height: 1, backgroundColor: "rgba(216,183,106,0.18)" },
-  scrollContent: { paddingHorizontal: 19, paddingTop: 12, paddingBottom: 112 },
+  scrollContent: { paddingHorizontal: 19, paddingTop: 12, paddingBottom: Platform.OS === "web" ? 120 : 140 },
   header: { height: 76, flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   headerSquare: { width: 54, height: 54, borderRadius: 17, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(18,18,18,0.58)", borderWidth: 1, borderColor: "rgba(255,255,255,0.18)" },
   logo: { position: "absolute", left: 116, right: 116, top: 1, height: 70 },
@@ -182,43 +208,44 @@ const styles = StyleSheet.create({
   ornamentLine: { width: 32, height: 2, borderRadius: 2, backgroundColor: COLORS.goldLight },
   ornamentDiamond: { width: 9, height: 9, borderWidth: 2, borderColor: COLORS.goldLight, transform: [{ rotate: "45deg" }] },
   subtitle: { marginTop: 15, color: "rgba(247,243,235,0.72)", fontSize: 17, lineHeight: 23, fontWeight: "700" },
-  segmentedControl: { minHeight: 60, borderRadius: 30, overflow: "hidden", flexDirection: "row", backgroundColor: "rgba(18,18,18,0.62)", borderWidth: 1, borderColor: "rgba(255,255,255,0.14)", marginBottom: 22 },
-  segment: { flex: 1, minHeight: 58, borderRadius: 29, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8 },
+  segmentedControl: { height: 58, borderRadius: 29, overflow: "hidden", flexDirection: "row", backgroundColor: "rgba(18,18,18,0.62)", borderWidth: 1, borderColor: "rgba(255,255,255,0.14)", marginBottom: 22 },
+  segment: { flex: 1, height: 52, margin: 2, borderRadius: 26, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8 },
   segmentActive: { backgroundColor: "rgba(216,183,106,0.14)", borderWidth: 1, borderColor: COLORS.gold },
-  segmentText: { color: COLORS.gray, fontSize: 14.5, fontWeight: "800" },
+  segmentText: { color: COLORS.gray, fontSize: 14, fontWeight: "800" },
   segmentTextActive: { color: COLORS.goldLight },
   segmentDivider: { position: "absolute", right: 0, width: 1, height: 32, backgroundColor: "rgba(255,255,255,0.11)" },
-  eventsList: { gap: 12 },
-  card: { minHeight: 142, borderRadius: 21, padding: 8, flexDirection: "row", gap: 10, backgroundColor: "rgba(18,18,18,0.72)", borderWidth: 1, borderColor: "rgba(255,255,255,0.14)", ...Platform.select({ web: { shadowColor: "#000", shadowOffset: { width: 0, height: 16 }, shadowOpacity: 0.26, shadowRadius: 20 }, default: { elevation: 6 } }) },
-  cardImage: { width: 124, minHeight: 126, borderRadius: 18, overflow: "hidden" },
+  eventsList: { gap: 14 },
+  card: { minHeight: 150, borderRadius: 21, padding: 12, gap: 12, backgroundColor: "rgba(18,18,18,0.72)", borderWidth: 1, borderColor: "rgba(255,255,255,0.14)", ...Platform.select({ web: { shadowColor: "#000", shadowOffset: { width: 0, height: 16 }, shadowOpacity: 0.26, shadowRadius: 20 }, default: { elevation: 6 } }) },
+  cardMainRow: { minHeight: 118, flexDirection: "row", alignItems: "center", gap: 10 },
+  cardImage: { width: 118, height: 118, borderRadius: 18, overflow: "hidden" },
   cardImageStyle: { borderRadius: 18 },
   imageOverlay: { flex: 1 },
-  dateBox: { width: 48, height: 96, alignSelf: "center", borderRadius: 13, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(18,18,18,0.72)", borderWidth: 1, borderColor: "rgba(255,255,255,0.16)" },
+  dateBox: { width: 56, height: 92, alignSelf: "center", borderRadius: 14, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(18,18,18,0.72)", borderWidth: 1, borderColor: "rgba(255,255,255,0.16)" },
   dateName: { color: COLORS.goldLight, fontSize: 13.5, fontWeight: "900" },
-  dateDay: { color: COLORS.goldLight, fontSize: 34, lineHeight: 38, fontWeight: "900", fontFamily: Platform.select({ ios: "Georgia", android: "serif", web: "Georgia" }) },
+  dateDay: { color: COLORS.goldLight, fontSize: 30, lineHeight: 34, fontWeight: "900", fontFamily: Platform.select({ ios: "Georgia", android: "serif", web: "Georgia" }) },
   dateMonth: { color: COLORS.goldLight, fontSize: 13.5, fontWeight: "900" },
-  cardBody: { flex: 1, minWidth: 0, paddingVertical: 8 },
-  cardTitle: { color: COLORS.ivory, fontSize: 20, lineHeight: 25, fontWeight: "900", letterSpacing: -0.35, marginBottom: 10, fontFamily: Platform.select({ ios: "Georgia", android: "serif", web: "Georgia" }) },
-  detailRow: { flexDirection: "row", alignItems: "center", gap: 7, marginTop: 7 },
-  detailText: { flex: 1, color: COLORS.gray, fontSize: 13.5, fontWeight: "700" },
-  actionColumn: { width: 108, justifyContent: "space-between", alignItems: "flex-end", paddingVertical: 18 },
-  statusBadge: { minHeight: 31, borderRadius: 16, paddingHorizontal: 9, flexDirection: "row", alignItems: "center", gap: 5, borderWidth: 1 },
-  statusText: { fontSize: 12.5, fontWeight: "900" },
-  actionButton: { minHeight: 42, borderRadius: 21, paddingHorizontal: 12, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 4, borderWidth: 1, borderColor: COLORS.gold, backgroundColor: "rgba(216,183,106,0.06)" },
-  actionText: { color: COLORS.goldLight, fontSize: 13.5, fontWeight: "900" },
+  cardBody: { flex: 1, minWidth: 0, alignSelf: "stretch", justifyContent: "center", paddingVertical: 2 },
+  cardTitle: { color: COLORS.ivory, fontSize: 20, lineHeight: 26, fontWeight: "900", letterSpacing: -0.35, marginBottom: 8, fontFamily: Platform.select({ ios: "Georgia", android: "serif", web: "Georgia" }) },
+  detailRow: { flexDirection: "row", alignItems: "center", gap: 7, marginTop: 6 },
+  detailText: { flex: 1, color: COLORS.gray, fontSize: 14, lineHeight: 18, fontWeight: "700" },
+  actionRow: { minHeight: 42, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 10 },
+  statusBadge: { height: 32, borderRadius: 16, paddingHorizontal: 10, flexDirection: "row", alignItems: "center", gap: 5, borderWidth: 1 },
+  statusText: { fontSize: 13, fontWeight: "900" },
+  actionButton: { minWidth: 105, height: 42, borderRadius: 22, paddingHorizontal: 12, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 4, borderWidth: 1, borderColor: COLORS.gold, backgroundColor: "rgba(216,183,106,0.06)" },
+  actionText: { color: COLORS.goldLight, fontSize: 14, lineHeight: 16, fontWeight: "900", textAlign: "center" },
   historyHeader: { marginTop: 22, marginBottom: 9, flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   historyTitle: { color: COLORS.ivory, fontSize: 24, fontWeight: "900", fontFamily: Platform.select({ ios: "Georgia", android: "serif", web: "Georgia" }) },
   seeAll: { color: COLORS.goldLight, fontSize: 15, fontWeight: "900" },
   historyCard: { borderRadius: 21, overflow: "hidden", backgroundColor: "rgba(18,18,18,0.7)", borderWidth: 1, borderColor: "rgba(255,255,255,0.13)" },
-  historyItem: { minHeight: 68, flexDirection: "row", alignItems: "center", gap: 10, paddingHorizontal: 10, paddingVertical: 9 },
+  historyItem: { minHeight: 74, flexDirection: "row", alignItems: "center", gap: 10, paddingHorizontal: 10, paddingVertical: 10 },
   historyDivider: { borderBottomWidth: 1, borderBottomColor: "rgba(255,255,255,0.09)" },
-  historyImage: { width: 58, height: 48, borderRadius: 10 },
+  historyImage: { width: 64, height: 52, borderRadius: 11 },
   historyBody: { flex: 1, minWidth: 0 },
   historyItemTitle: { color: COLORS.ivory, fontSize: 16, fontWeight: "900", fontFamily: Platform.select({ ios: "Georgia", android: "serif", web: "Georgia" }) },
   historyMeta: { marginTop: 7, flexDirection: "row", alignItems: "center", gap: 5 },
-  historyMetaText: { color: COLORS.gray, fontSize: 11.5, fontWeight: "700", maxWidth: 92 },
+  historyMetaText: { color: COLORS.gray, fontSize: 11.5, fontWeight: "700", maxWidth: 104 },
   historyDot: { color: COLORS.gray, fontSize: 11, fontWeight: "900" },
-  historyBadge: { minHeight: 28, borderRadius: 14, paddingHorizontal: 9, flexDirection: "row", alignItems: "center", gap: 5, borderWidth: 1 },
+  historyBadge: { height: 28, borderRadius: 14, paddingHorizontal: 9, flexDirection: "row", alignItems: "center", gap: 5, borderWidth: 1 },
   historyBadgeText: { fontSize: 11.5, fontWeight: "900" },
   emptyCard: { minHeight: 190, borderRadius: 24, overflow: "hidden", alignItems: "center", justifyContent: "center", paddingHorizontal: 24, backgroundColor: "rgba(18,18,18,0.68)", borderWidth: 1, borderColor: "rgba(216,183,106,0.26)" },
   emptyTitle: { marginTop: 14, color: COLORS.ivory, fontSize: 20, fontWeight: "900", textAlign: "center" },

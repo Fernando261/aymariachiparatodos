@@ -173,7 +173,6 @@ export default function EventDetailsScreen() {
             </View>
 
             <View style={styles.heroCopy}>
-              <Text style={styles.kicker}>Guadalajara · Mariachi premium</Text>
               <Text style={styles.titleWhite}>¿A dónde vas a llevar</Text>
               <Text style={styles.titleGold}>la música hoy?</Text>
               <Text style={styles.heroSubtitle}>Contrata experiencias con alma tapatía para tu próxima celebración.</Text>

@@ -2,7 +2,6 @@ import React, { useMemo, useState } from "react";
 import {
   Dimensions,
   Image,
-  ImageBackground,
   Modal,
   Platform,
   Pressable,
@@ -50,6 +49,7 @@ import { COLORS } from "@/constants/colors";
 const MOBILE_WIDTH = 430;
 const SIDE_SPACING = 18;
 const CARD_GAP = 16;
+const CARD_IMAGE_RATIO = 0.43;
 const backgroundImage = require("@/assets/images/mariachis/mariachibg.png");
 const logoImage = require("@/assets/images/logo-glow.png");
 
@@ -249,7 +249,12 @@ function MariachiCard({
           style={[styles.card, { width: cardWidth, height: cardHeight }]}
         >
           <View style={styles.activeGlow} />
-          <View style={[styles.imageWrapper, { height: cardHeight * 0.52 }]}>
+          <View
+            style={[
+              styles.imageWrapper,
+              { height: cardHeight * CARD_IMAGE_RATIO },
+            ]}
+          >
             <Image
               source={item.image}
               resizeMode="contain"
@@ -272,7 +277,11 @@ function MariachiCard({
           </View>
 
           <View style={styles.cardBody}>
-            <Text numberOfLines={1} style={styles.cardTitle}>
+            <Text
+              numberOfLines={1}
+              ellipsizeMode="tail"
+              style={styles.cardTitle}
+            >
               {item.alias}
             </Text>
             <View style={styles.ratingLine}>
@@ -296,13 +305,13 @@ function MariachiCard({
               />
               <InfoItem Icon={LocationIcon} label={item.zone} />
             </View>
-            <View style={styles.priceRow}>
+            <View style={styles.cardFooter}>
               <View>
-                <Text style={styles.pricePrefix}>Desde</Text>
+                <Text style={styles.priceLabel}>Desde</Text>
                 <Text style={styles.price}>${formatPrice(item.price)}</Text>
               </View>
-              <View style={styles.detailButton}>
-                <Text style={styles.detailButtonText}>Ver detalles</Text>
+              <View style={styles.detailsButton}>
+                <Text style={styles.detailsButtonText}>Ver detalles</Text>
                 <ChevronRightIcon
                   size={18}
                   color={COLORS.black}
@@ -339,7 +348,7 @@ export default function MariachisScreen() {
     Platform.OS === "web" ? MOBILE_WIDTH : width,
   );
   const cardWidth = Math.min(frameWidth * 0.78, frameWidth - SIDE_SPACING * 2);
-  const cardHeight = Math.min(Math.max(height * 0.48, 390), 430);
+  const cardHeight = Math.min(Math.max(height * 0.5, 400), 470);
   const itemSize = cardWidth + CARD_GAP;
   const [selectedMariachi, setSelectedMariachi] = useState<Mariachi | null>(
     null,
@@ -562,17 +571,18 @@ export default function MariachisScreen() {
                     >
                       <XIcon size={22} color={COLORS.ivory} strokeWidth={2.2} />
                     </TouchableOpacity>
-                    <ImageBackground
-                      source={selectedMariachi.image}
-                      resizeMode="cover"
-                      style={styles.modalImage}
-                      imageStyle={styles.modalImageStyle}
-                    >
-                      <LinearGradient
-                        colors={["rgba(0,0,0,0.05)", "rgba(0,0,0,0.68)"]}
-                        style={styles.modalImageOverlay}
+                    <View style={styles.modalImageWrapper}>
+                      <Image
+                        source={selectedMariachi.image}
+                        resizeMode="contain"
+                        style={styles.modalImage}
                       />
-                    </ImageBackground>
+                      <LinearGradient
+                        colors={["rgba(0,0,0,0.02)", "rgba(0,0,0,0.22)"]}
+                        style={styles.modalImageOverlay}
+                        pointerEvents="none"
+                      />
+                    </View>
                     <Text style={styles.modalTitle}>
                       {selectedMariachi.alias}
                     </Text>
@@ -594,7 +604,7 @@ export default function MariachisScreen() {
                       />
                     </View>
                     <View style={styles.modalPriceBox}>
-                      <Text style={styles.pricePrefix}>Desde</Text>
+                      <Text style={styles.priceLabel}>Desde</Text>
                       <Text style={styles.modalPrice}>
                         ${formatPrice(selectedMariachi.price)}
                       </Text>
@@ -840,7 +850,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   cardImage: { width: "100%", height: "100%" },
-  cardImageStyle: { borderTopLeftRadius: 30, borderTopRightRadius: 30 },
   imageOverlay: { ...StyleSheet.absoluteFillObject },
   imageBadge: {
     position: "absolute",
@@ -861,7 +870,7 @@ const styles = StyleSheet.create({
     fontSize: 12.5,
     fontWeight: "900",
   },
-  cardBody: { paddingHorizontal: 18, paddingVertical: 14 },
+  cardBody: { paddingHorizontal: 18, paddingTop: 14, paddingBottom: 16 },
   cardTitle: {
     color: COLORS.ivory,
     fontSize: 22,
@@ -875,7 +884,7 @@ const styles = StyleSheet.create({
     }),
   },
   ratingLine: {
-    marginTop: 8,
+    marginTop: 6,
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
@@ -898,20 +907,26 @@ const styles = StyleSheet.create({
     borderColor: "rgba(216,183,106,0.4)",
   },
   verifiedText: { color: COLORS.goldLight, fontSize: 12.5, fontWeight: "900" },
-  infoGrid: { marginTop: 9, gap: 7 },
-  infoItem: { flexDirection: "row", alignItems: "center", gap: 8 },
-  infoText: { flex: 1, color: COLORS.gray, fontSize: 14, fontWeight: "800" },
-  priceRow: {
+  infoGrid: { marginTop: 7, gap: 6 },
+  infoItem: { flexDirection: "row", alignItems: "center", gap: 7 },
+  infoText: {
+    flex: 1,
+    color: COLORS.gray,
+    fontSize: 14,
+    lineHeight: 18,
+    fontWeight: "800",
+  },
+  cardFooter: {
     marginTop: 10,
     paddingTop: 10,
     borderTopWidth: 1,
-    borderTopColor: "rgba(255,255,255,0.13)",
+    borderTopColor: "rgba(200,155,60,0.22)",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     gap: 10,
   },
-  pricePrefix: {
+  priceLabel: {
     color: "rgba(247,243,235,0.62)",
     fontSize: 12.5,
     fontWeight: "800",
@@ -928,16 +943,16 @@ const styles = StyleSheet.create({
       web: "Georgia",
     }),
   },
-  detailButton: {
-    minHeight: 40,
-    borderRadius: 20,
-    paddingHorizontal: 13,
+  detailsButton: {
+    height: 46,
+    borderRadius: 24,
+    paddingHorizontal: 18,
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
     backgroundColor: COLORS.goldLight,
   },
-  detailButtonText: { color: COLORS.black, fontSize: 13.5, fontWeight: "900" },
+  detailsButtonText: { color: COLORS.black, fontSize: 14, fontWeight: "800" },
   tabBar: {
     position: "absolute",
     left: 0,
@@ -988,9 +1003,17 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.18)",
   },
-  modalImage: { height: 230, borderRadius: 24, overflow: "hidden" },
-  modalImageStyle: { borderRadius: 24 },
-  modalImageOverlay: { flex: 1 },
+  modalImageWrapper: {
+    width: "100%",
+    height: 240,
+    borderRadius: 22,
+    overflow: "hidden",
+    backgroundColor: "rgba(0,0,0,0.35)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalImage: { width: "100%", height: "100%" },
+  modalImageOverlay: { ...StyleSheet.absoluteFillObject },
   modalTitle: {
     marginTop: 17,
     color: COLORS.ivory,

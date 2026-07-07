@@ -1,8 +1,10 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Dimensions,
   Image,
   Modal,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
   Platform,
   Pressable,
   ScrollView,
@@ -12,7 +14,7 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
-import type { ImageSourcePropType } from "react-native";
+import type { FlatList as RNFlatList, ImageSourcePropType } from "react-native";
 
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
@@ -50,6 +52,7 @@ const MOBILE_WIDTH = 430;
 const SIDE_SPACING = 18;
 const CARD_GAP = 16;
 const CARD_IMAGE_RATIO = 0.43;
+const LOOP_MULTIPLIER = 5;
 const backgroundImage = require("@/assets/images/mariachis/mariachibg.png");
 const logoImage = require("@/assets/images/logo-glow.png");
 
@@ -65,6 +68,14 @@ type Mariachi = {
   verified: boolean;
   comments: string[];
 };
+
+type LoopedMariachi = Mariachi & {
+  originalIndex: number;
+  loopIndex: number;
+  loopKey: string;
+};
+
+type CarouselMariachi = Mariachi | LoopedMariachi;
 
 type Tab = {
   label: string;
@@ -182,7 +193,7 @@ function MariachiCard({
   cardHeight,
   onPress,
 }: {
-  item: Mariachi;
+  item: CarouselMariachi;
   index: number;
   scrollX: SharedValue<number>;
   itemSize: number;
@@ -354,13 +365,98 @@ export default function MariachisScreen() {
     null,
   );
   const [activeFilter, setActiveFilter] = useState(filters[0]);
+  const listRef = useRef<RNFlatList<CarouselMariachi>>(null);
   const scrollX = useSharedValue(0);
+
+  const filteredMariachis = useMemo(() => {
+    const sortedMariachis = [...mariachis];
+
+    switch (activeFilter) {
+      case "Más contratados":
+        return sortedMariachis.sort((a, b) => b.contracts - a.contracts);
+      case "Precio menor":
+        return sortedMariachis.sort((a, b) => a.price - b.price);
+      case "Cercanos":
+        return sortedMariachis.sort((a, b) => a.zone.localeCompare(b.zone));
+      case "Mejor calificados":
+      default:
+        return sortedMariachis.sort((a, b) => b.rating - a.rating);
+    }
+  }, [activeFilter]);
+
+  const shouldLoop = filteredMariachis.length > 1;
+  const middleLoopIndex = Math.floor(LOOP_MULTIPLIER / 2);
+  const initialIndex = shouldLoop
+    ? middleLoopIndex * filteredMariachis.length
+    : 0;
+  const carouselMariachis: CarouselMariachi[] = useMemo(() => {
+    if (!shouldLoop) return filteredMariachis;
+
+    return Array.from({ length: LOOP_MULTIPLIER }).flatMap((_, loopIndex) =>
+      filteredMariachis.map((item, index) => ({
+        ...item,
+        originalIndex: index,
+        loopIndex,
+        loopKey: `${item.id}-${loopIndex}-${index}`,
+      })),
+    );
+  }, [filteredMariachis, shouldLoop]);
 
   const onScroll = useAnimatedScrollHandler({
     onScroll: (event) => {
       scrollX.value = event.contentOffset.x;
     },
   });
+
+  useEffect(() => {
+    const initialOffset = initialIndex * itemSize;
+    scrollX.value = initialOffset;
+
+    const animationFrame = requestAnimationFrame(() => {
+      listRef.current?.scrollToOffset({
+        offset: initialOffset,
+        animated: false,
+      });
+    });
+
+    return () => cancelAnimationFrame(animationFrame);
+  }, [initialIndex, itemSize, scrollX]);
+
+  function normalizeCarouselIndex(index: number) {
+    if (!filteredMariachis.length) return 0;
+
+    return (
+      ((index % filteredMariachis.length) + filteredMariachis.length) %
+      filteredMariachis.length
+    );
+  }
+
+  function handleMomentumScrollEnd(
+    event: NativeSyntheticEvent<NativeScrollEvent>,
+  ) {
+    if (!shouldLoop || !filteredMariachis.length) return;
+
+    const currentIndex = Math.round(
+      event.nativeEvent.contentOffset.x / itemSize,
+    );
+    const isNearStart = currentIndex < filteredMariachis.length;
+    const isNearEnd =
+      currentIndex > carouselMariachis.length - filteredMariachis.length - 1;
+
+    if (!isNearStart && !isNearEnd) return;
+
+    const resetIndex =
+      middleLoopIndex * filteredMariachis.length +
+      normalizeCarouselIndex(currentIndex);
+    const resetOffset = resetIndex * itemSize;
+
+    scrollX.value = resetOffset;
+    listRef.current?.scrollToOffset({
+      offset: resetOffset,
+      animated: false,
+    });
+  }
+
   const contextLine = [
     params.musicians ? `Para ${params.musicians} elementos` : null,
     params.category || null,
@@ -495,12 +591,21 @@ export default function MariachisScreen() {
             </ScrollView>
 
             <Animated.FlatList
-              data={mariachis}
+              ref={listRef}
+              data={carouselMariachis}
               horizontal
               snapToInterval={itemSize}
               decelerationRate="fast"
               showsHorizontalScrollIndicator={false}
-              keyExtractor={(item) => item.id}
+              keyExtractor={(item, index) =>
+                "loopKey" in item ? item.loopKey : `${item.id}-${index}`
+              }
+              onMomentumScrollEnd={handleMomentumScrollEnd}
+              getItemLayout={(_, index) => ({
+                length: itemSize,
+                offset: itemSize * index,
+                index,
+              })}
               onScroll={onScroll}
               scrollEventThrottle={16}
               contentContainerStyle={{

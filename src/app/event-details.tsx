@@ -63,6 +63,7 @@ type Tab = {
 const MOBILE_WIDTH = 430;
 const quantityOptions = [4, 5, 6, 7, 8, 9, 10, 12, 15];
 const backgroundImage = require("@/assets/images/mariachis/mariachibg.png");
+const logoImage = require("@/assets/images/logo-glow.png");
 
 const categories: Category[] = [
   { label: "Cumpleaños", Icon: CakeIcon },
@@ -163,11 +164,12 @@ export default function EventDetailsScreen() {
 
           <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
             <View style={styles.header}>
-              <TouchableOpacity activeOpacity={0.75} style={styles.headerButton}>
-                <MenuIcon size={28} color={COLORS.gold} strokeWidth={2.2} />
+              <TouchableOpacity activeOpacity={0.75} style={styles.headerSquare}>
+                <MenuIcon size={26} color={COLORS.ivory} strokeWidth={2.1} />
               </TouchableOpacity>
-              <TouchableOpacity activeOpacity={0.75} style={styles.notificationButton}>
-                <BellIcon size={26} color={COLORS.gold} strokeWidth={2.2} />
+              <Image source={logoImage} resizeMode="contain" style={styles.logo} />
+              <TouchableOpacity activeOpacity={0.75} style={styles.headerSquare}>
+                <BellIcon size={25} color={COLORS.ivory} strokeWidth={2.1} />
                 <View style={styles.notificationBadge} />
               </TouchableOpacity>
             </View>
@@ -278,10 +280,10 @@ const styles = StyleSheet.create({
   goldLineTop: { position: "absolute", top: 92, left: 18, right: 18, height: 1, backgroundColor: "rgba(216,183,106,0.22)" },
   goldLineBottom: { position: "absolute", bottom: 87, left: 28, right: 28, height: 1, backgroundColor: "rgba(216,183,106,0.18)" },
   scrollContent: { paddingHorizontal: 16, paddingTop: 12, paddingBottom: 126 },
-  header: { height: 42, flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-  headerButton: { width: 46, height: 42, alignItems: "flex-start", justifyContent: "center" },
-  notificationButton: { width: 44, height: 42, alignItems: "flex-end", justifyContent: "center" },
-  notificationBadge: { position: "absolute", top: 6, right: 0, width: 10, height: 10, borderRadius: 5, backgroundColor: COLORS.goldLight, borderWidth: 1, borderColor: COLORS.black },
+  header: { height: 76, flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
+  headerSquare: { width: 54, height: 54, borderRadius: 17, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(18,18,18,0.58)", borderWidth: 1, borderColor: "rgba(255,255,255,0.18)" },
+  logo: { position: "absolute", left: 116, right: 116, top: 1, height: 70 },
+  notificationBadge: { position: "absolute", top: 7, right: 8, width: 11, height: 11, borderRadius: 6, backgroundColor: COLORS.goldLight, borderWidth: 1, borderColor: COLORS.black },
   heroCopy: { marginTop: 20, marginBottom: 24 },
   kicker: { color: COLORS.goldLight, fontSize: 12, fontWeight: "900", letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 10 },
   titleWhite: { color: COLORS.ivory, fontSize: 28, lineHeight: 35, fontWeight: "700", letterSpacing: -0.5 },

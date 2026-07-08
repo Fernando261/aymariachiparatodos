@@ -81,6 +81,7 @@ export function MoonIcon(props: IconProps) { const svg = iconProps(props); retur
 export function EditIcon(props: IconProps) { const svg = iconProps(props); return <Svg {...svg}><Path d="M12 20h9" /><Path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4 11.5-11.5Z" /></Svg>; }
 export function TicketIcon(props: IconProps) { const svg = iconProps(props); return <Svg {...svg}><Path d="M4 9.5 9.5 4l10.5 10.5-5.5 5.5a2.3 2.3 0 0 1-3.2 0L4 12.7a2.3 2.3 0 0 1 0-3.2Z" /><Path d="M8.5 8.5 10 10" /><Path d="M12 12 13.5 13.5" /><Path d="M15.5 15.5 17 17" /><Path d="M13.5 6.8a2 2 0 0 0 2.8 2.8" /></Svg>; }
 
+export function LockIcon(props: IconProps) { const svg = iconProps(props); return <Svg {...svg}><Rect x="5" y="10" width="14" height="10" rx="2" /><Path d="M8 10V7a4 4 0 0 1 8 0v3" /><Line x1="12" y1="14" x2="12" y2="16.5" /></Svg>; }
 export function MailIcon(props: IconProps) { const svg = iconProps(props); return <Svg {...svg}><Rect x="3.5" y="5.5" width="17" height="13" rx="2.2" /><Path d="m4.5 7 7.5 6 7.5-6" /></Svg>; }
 export function DollarIcon(props: IconProps) { const svg = iconProps(props); return <Svg {...svg}><Circle cx="12" cy="12" r="9" /><Path d="M14.8 8.8c-.7-.7-1.7-1-2.8-1-1.7 0-3 .8-3 2.1 0 1.4 1.3 1.9 3 2.2 1.8.3 3 .8 3 2.2 0 1.3-1.2 2.1-3 2.1-1.3 0-2.5-.4-3.3-1.2" /><Line x1="12" y1="6.2" x2="12" y2="17.8" /></Svg>; }
 export function SwitchIcon(props: IconProps) { const svg = iconProps(props); return <Svg {...svg}><Rect x="3" y="7" width="18" height="10" rx="5" /><Circle cx="15" cy="12" r="3" /></Svg>; }

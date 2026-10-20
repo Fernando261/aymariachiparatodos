@@ -804,7 +804,7 @@ const styles = StyleSheet.create({
     }),
   },
   dimLayer: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     backgroundColor: "rgba(0,0,0,0.34)",
   },
   goldLineTop: {
@@ -955,7 +955,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   cardImage: { width: "100%", height: "100%" },
-  imageOverlay: { ...StyleSheet.absoluteFillObject },
+  imageOverlay: { ...StyleSheet.absoluteFill },
   imageBadge: {
     position: "absolute",
     left: 12,
@@ -1118,7 +1118,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   modalImage: { width: "100%", height: "100%" },
-  modalImageOverlay: { ...StyleSheet.absoluteFillObject },
+  modalImageOverlay: { ...StyleSheet.absoluteFill },
   modalTitle: {
     marginTop: 17,
     color: COLORS.ivory,

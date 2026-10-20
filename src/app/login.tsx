@@ -291,7 +291,7 @@ const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: COLORS.black },
   safeArea: { flex: 1, backgroundColor: COLORS.black },
   appFrame: { flex: 1, width: "100%", maxWidth: Platform.OS === "web" ? MOBILE_WIDTH : "100%", alignSelf: "center", overflow: "hidden", backgroundColor: COLORS.black },
-  dimLayer: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,0.18)" },
+  dimLayer: { ...StyleSheet.absoluteFill, backgroundColor: "rgba(0,0,0,0.18)" },
   goldLineTop: { position: "absolute", top: 0, left: 24, right: 24, height: 1, backgroundColor: "rgba(216,183,106,0.36)" },
   goldLineBottom: { position: "absolute", bottom: 0, left: 24, right: 24, height: 1, backgroundColor: "rgba(216,183,106,0.3)" },
   keyboard: { flex: 1 },

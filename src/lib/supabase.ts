@@ -27,7 +27,9 @@ if (!isSupabaseConfigured) {
  */
 export const supabase = createClient(supabaseUrl!, supabaseKey!, {
   auth: {
-    storage: localStorage,
+    ...(typeof localStorage !== "undefined" && {
+      storage: localStorage,
+    }),
     autoRefreshToken: true,
     persistSession: true,
     detectSessionInUrl: false,

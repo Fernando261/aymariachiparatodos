@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Alert, Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
@@ -25,6 +25,7 @@ import {
   UserIcon,
 } from "@/components/AppIcons";
 import { COLORS } from "@/constants/colors";
+import { supabase } from "@/lib/supabase";
 
 const MOBILE_WIDTH = 430;
 const backgroundImage = require("@/assets/images/mariachis/mariachibg.png");
@@ -45,6 +46,20 @@ const options: OptionItem[] = [
 
 export default function ProfileScreen() {
   const [darkMode, setDarkMode] = useState(true);
+  const [isSigningOut, setIsSigningOut] = useState(false);
+
+  const handleSignOut = async () => {
+    setIsSigningOut(true);
+    const { error } = await supabase.auth.signOut();
+    setIsSigningOut(false);
+
+    if (error) {
+      Alert.alert("No pudimos cerrar sesión", "Inténtalo de nuevo.");
+      return;
+    }
+
+    router.replace("/welcome");
+  };
 
   const tabs: Tab[] = useMemo(
     () => [
@@ -146,6 +161,9 @@ export default function ProfileScreen() {
                 <Text style={styles.editButtonText}>Editar perfil</Text>
               </LinearGradient>
             </TouchableOpacity>
+            <TouchableOpacity activeOpacity={0.88} disabled={isSigningOut} onPress={handleSignOut} style={styles.signOutButton}>
+              {isSigningOut ? <ActivityIndicator color={COLORS.goldLight} /> : <Text style={styles.signOutText}>Cerrar sesión</Text>}
+            </TouchableOpacity>
           </ScrollView>
 
           <BlurView intensity={34} tint="dark" style={styles.tabBar}>
@@ -227,6 +245,8 @@ const styles = StyleSheet.create({
   editButton: { height: 64, borderRadius: 20, overflow: "hidden", marginBottom: 6, ...Platform.select({ web: { shadowColor: COLORS.gold, shadowOffset: { width: 0, height: 12 }, shadowOpacity: 0.28, shadowRadius: 20 }, default: { elevation: 7 } }) },
   editButtonGradient: { flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 13 },
   editButtonText: { color: COLORS.black, fontSize: 18, fontWeight: "900" },
+  signOutButton: { minHeight: 54, borderRadius: 20, marginBottom: 6, alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: "rgba(216,183,106,0.58)", backgroundColor: "rgba(18,18,18,0.72)" },
+  signOutText: { color: COLORS.goldLight, fontSize: 17, fontWeight: "900" },
   tabBar: { position: "absolute", left: 0, right: 0, bottom: 0, height: 80, overflow: "hidden", paddingTop: 11, paddingHorizontal: 12, flexDirection: "row", justifyContent: "space-between", backgroundColor: "rgba(18,18,18,0.86)", borderTopWidth: 1, borderTopColor: "rgba(216,183,106,0.2)" },
   tabItem: { minWidth: 74, alignItems: "center", gap: 5 },
   tabLabel: { color: COLORS.gray, fontSize: 11.5, fontWeight: "800" },

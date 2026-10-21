@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import {
   Alert,
+  ActivityIndicator,
   Image,
   KeyboardAvoidingView,
   Platform,
@@ -29,6 +30,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { CrownIcon, EyeIcon, EyeOffIcon, LockIcon, MailIcon, MusicIcon, ShieldIcon, UserIcon, UsersIcon } from "@/components/AppIcons";
 import { COLORS } from "@/constants/colors";
+import { supabase } from "@/lib/supabase";
 
 const MOBILE_WIDTH = 430;
 const backgroundImage = require("@/assets/images/mariachis/mariachibg.png");
@@ -65,6 +67,19 @@ const initialValues: FormValues = {
   representativeName: "",
   phone: "",
   zone: "",
+};
+
+const registrationErrorMessage = (message: string) => {
+  const normalizedMessage = message.toLowerCase();
+
+  if (normalizedMessage.includes("already registered") || normalizedMessage.includes("already exists")) {
+    return "Ya existe una cuenta con este correo. Intenta iniciar sesión.";
+  }
+  if (normalizedMessage.includes("password")) {
+    return "La contraseña no cumple los requisitos de seguridad. Elige una contraseña más segura.";
+  }
+
+  return "No fue posible crear tu cuenta. Verifica tus datos e inténtalo de nuevo.";
 };
 
 const copy = {
@@ -139,6 +154,7 @@ export default function LoginScreen() {
   const [values, setValues] = useState<FormValues>(initialValues);
   const [focusedField, setFocusedField] = useState<FieldKey | null>(null);
   const [visiblePasswords, setVisiblePasswords] = useState<Record<string, boolean>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const introOpacity = useSharedValue(0);
   const introTranslate = useSharedValue(-18);
@@ -173,7 +189,7 @@ export default function LoginScreen() {
     setFocusedField(null);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!values.email.trim()) {
       Alert.alert("Correo requerido", accountType === "mariachi" ? "Ingresa el correo del grupo." : "Ingresa tu correo electrónico.");
       return;
@@ -193,7 +209,59 @@ export default function LoginScreen() {
       }
     }
 
-    router.replace(accountType === "mariachi" ? "/mariachi-dashboard" : "/event-details");
+    setIsSubmitting(true);
+
+    try {
+      if (authMode === "login") {
+        const { error } = await supabase.auth.signInWithPassword({
+          email: values.email.trim(),
+          password: values.password,
+        });
+
+        if (error) {
+          if (error.message.toLowerCase().includes("email not confirmed")) {
+            Alert.alert("Confirma tu correo", "Confirma el enlace que enviamos a tu correo antes de iniciar sesión.");
+          } else {
+            Alert.alert("No pudimos iniciar sesión", "El correo o la contraseña no son correctos. Verifica tus datos e inténtalo de nuevo.");
+          }
+          return;
+        }
+
+        router.replace("/event-details");
+        return;
+      }
+
+      const fullName = (accountType === "mariachi" ? values.representativeName : values.fullName).trim();
+      const { data, error } = await supabase.auth.signUp({
+        email: values.email.trim(),
+        password: values.password,
+        options: {
+          data: fullName ? { full_name: fullName } : undefined,
+        },
+      });
+
+      if (error) {
+        Alert.alert("No pudimos crear tu cuenta", registrationErrorMessage(error.message));
+        return;
+      }
+
+      if (data.user?.identities?.length === 0) {
+        Alert.alert("Correo ya registrado", "Ya existe una cuenta con este correo. Intenta iniciar sesión.");
+        return;
+      }
+
+      if (!data.session) {
+        Alert.alert("Confirma tu correo", "Te enviamos un enlace de confirmación. Revísalo antes de iniciar sesión.");
+        setAuthMode("login");
+        return;
+      }
+
+      router.replace("/event-details");
+    } catch {
+      Alert.alert("Error de conexión", "No pudimos comunicarnos con el servicio de autenticación. Inténtalo de nuevo.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -256,12 +324,15 @@ export default function LoginScreen() {
 
                   <Animated.View style={[styles.buttonWrapper, buttonAnimatedStyle]}>
                     <Pressable
+                      accessibilityRole="button"
+                      accessibilityState={{ disabled: isSubmitting }}
+                      disabled={isSubmitting}
                       onPress={handleSubmit}
                       onPressIn={() => { buttonScale.value = withSpring(0.97); }}
                       onPressOut={() => { buttonScale.value = withSpring(1); }}
                       style={styles.button}
                     >
-                      <Text style={styles.buttonText}>{currentCopy.button}</Text>
+                      {isSubmitting ? <ActivityIndicator color={COLORS.black} /> : <Text style={styles.buttonText}>{currentCopy.button}</Text>}
                     </Pressable>
                   </Animated.View>
 

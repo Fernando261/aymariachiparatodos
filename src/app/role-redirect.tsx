@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   ActivityIndicator,
   StyleSheet,
@@ -6,50 +6,16 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { router } from "expo-router";
+import { Redirect } from "expo-router";
 
-import { getCurrentAppRole } from "@/lib/account-role";
-
-const roleDestinations = {
-  customer: "/event-details",
-  admin: "/admin-dashboard",
-  mariachi_team: "/mariachi-dashboard",
-} as const;
+import { useAccountAccess } from "@/lib/account-access";
+import { roleDestinations } from "@/lib/account-routes";
 
 export default function RoleRedirectScreen() {
-  const [error, setError] = useState(false);
-  const [retry, setRetry] = useState(0);
+  const access = useAccountAccess();
 
-  useEffect(() => {
-    let active = true;
-
-    const resolveRole = async () => {
-      setError(false);
-
-      try {
-        const role = await getCurrentAppRole();
-
-        if (!active) return;
-
-        if (!role) {
-          router.replace("/welcome");
-          return;
-        }
-
-        router.replace(roleDestinations[role]);
-      } catch {
-        if (active) {
-          setError(true);
-        }
-      }
-    };
-
-    void resolveRole();
-
-    return () => {
-      active = false;
-    };
-  }, [retry]);
+  if (access.status === "signed-out") return <Redirect href="/welcome" />;
+  if (access.status === "ready") return <Redirect href={roleDestinations[access.role]} />;
 
   return (
     <View style={styles.container}>
@@ -57,15 +23,16 @@ export default function RoleRedirectScreen() {
         AY! MARIACHI PARA TODOS
       </Text>
 
-      {error ? (
+      {access.status === "error" ? (
         <>
           <Text style={styles.message}>
-            No pudimos verificar tu tipo de cuenta.
+            {access.message}
           </Text>
 
           <TouchableOpacity
             style={styles.button}
-            onPress={() => setRetry((value) => value + 1)}
+            accessibilityRole="button"
+            onPress={access.retry}
           >
             <Text style={styles.buttonText}>Reintentar</Text>
           </TouchableOpacity>

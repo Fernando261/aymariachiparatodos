@@ -16,7 +16,7 @@ import {
 
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
-import { router, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import Animated, {
   FadeInDown,
   FadeOutUp,
@@ -227,7 +227,7 @@ export default function LoginScreen() {
           return;
         }
 
-        router.replace("/role-redirect");
+        // The central guard observes SIGNED_IN and resolves the account's role.
         return;
       }
 
@@ -256,7 +256,7 @@ export default function LoginScreen() {
         return;
       }
 
-      router.replace("/role-redirect");
+      // A signup with a session follows the same central role verification.
     } catch {
       Alert.alert("Error de conexión", "No pudimos comunicarnos con el servicio de autenticación. Inténtalo de nuevo.");
     } finally {

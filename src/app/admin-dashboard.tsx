@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { getCurrentAppRole } from "@/lib/account-role";
 import { supabase } from "@/lib/supabase";
 
 type Booking = {
@@ -20,7 +19,7 @@ type Booking = {
   status: string;
 };
 
-type ScreenState = "loading" | "ready" | "denied" | "error";
+type ScreenState = "loading" | "ready" | "error";
 
 export default function AdminDashboardScreen() {
   const [screenState, setScreenState] =
@@ -28,6 +27,24 @@ export default function AdminDashboardScreen() {
 
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [reload, setReload] = useState(0);
+  const [isSigningOut, setIsSigningOut] = useState(false);
+  const [signOutError, setSignOutError] = useState(false);
+
+  const handleSignOut = async () => {
+    if (isSigningOut) return;
+    setIsSigningOut(true);
+    setSignOutError(false);
+
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      // SIGNED_OUT removes the protected stack and returns to /welcome.
+    } catch {
+      setSignOutError(true);
+    } finally {
+      setIsSigningOut(false);
+    }
+  };
 
   useEffect(() => {
     let active = true;
@@ -36,15 +53,6 @@ export default function AdminDashboardScreen() {
       setScreenState("loading");
 
       try {
-        const role = await getCurrentAppRole();
-
-        if (!active) return;
-
-        if (role !== "admin") {
-          setScreenState("denied");
-          return;
-        }
-
         const { data, error } = await supabase
           .from("booking_requests")
           .select(
@@ -92,6 +100,26 @@ export default function AdminDashboardScreen() {
         <Text style={styles.subtitle}>
           Gestión de contrataciones
         </Text>
+
+        <TouchableOpacity
+          accessibilityRole="button"
+          accessibilityLabel="Cerrar sesión"
+          accessibilityState={{ disabled: isSigningOut, busy: isSigningOut }}
+          disabled={isSigningOut}
+          onPress={handleSignOut}
+          style={[styles.signOutButton, isSigningOut && styles.signOutButtonDisabled]}
+        >
+          {isSigningOut ? (
+            <ActivityIndicator color="#D8B76A" />
+          ) : (
+            <Text style={styles.signOutText}>Cerrar sesión</Text>
+          )}
+        </TouchableOpacity>
+        {signOutError && (
+          <Text accessibilityRole="alert" style={styles.signOutError}>
+            No pudimos cerrar sesión. Inténtalo de nuevo.
+          </Text>
+        )}
       </View>
 
       {screenState === "loading" && (
@@ -100,13 +128,6 @@ export default function AdminDashboardScreen() {
           color="#C89B3C"
           style={styles.loader}
         />
-      )}
-
-      {screenState === "denied" && (
-        <Text style={styles.message}>
-          Acceso restringido. Esta sección requiere
-          una cuenta administradora.
-        </Text>
       )}
 
       {screenState === "error" && (
@@ -210,6 +231,19 @@ const styles = StyleSheet.create({
     fontSize: 15,
     marginTop: 6,
   },
+  signOutButton: {
+    minHeight: 48,
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: "#C89B3C",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 20,
+    backgroundColor: "#1A1A1A",
+  },
+  signOutButtonDisabled: { opacity: 0.6 },
+  signOutText: { color: "#D8B76A", fontWeight: "800" },
+  signOutError: { color: "#F7F3EB", marginTop: 12, lineHeight: 23 },
   loader: {
     marginTop: 50,
   },

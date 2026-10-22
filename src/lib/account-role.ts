@@ -5,24 +5,13 @@ export type AppRole =
   | "admin"
   | "mariachi_team";
 
-export async function getCurrentAppRole(): Promise<AppRole | null> {
-  const {
-    data: { user },
-    error: authError,
-  } = await supabase.auth.getUser();
-
-  if (authError) {
-    throw new Error("No fue posible validar la sesión.");
-  }
-
-  if (!user) {
-    return null;
-  }
-
+// The ID comes from the centrally observed Supabase session, never from route
+// parameters or signup metadata. Database RLS remains the authorization boundary.
+export async function getAppRole(userId: string): Promise<AppRole> {
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
     .select("role")
-    .eq("id", user.id)
+    .eq("id", userId)
     .single();
 
   if (profileError || !profile) {

@@ -227,7 +227,7 @@ export default function LoginScreen() {
           return;
         }
 
-        router.replace("/event-details");
+        router.replace("/role-redirect");
         return;
       }
 
@@ -256,7 +256,7 @@ export default function LoginScreen() {
         return;
       }
 
-      router.replace("/event-details");
+      router.replace("/role-redirect");
     } catch {
       Alert.alert("Error de conexión", "No pudimos comunicarnos con el servicio de autenticación. Inténtalo de nuevo.");
     } finally {

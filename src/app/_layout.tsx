@@ -47,7 +47,7 @@ export default function RootLayout() {
     if (hasSession && isPublicRoute) {
       // New accounts always start as customers. Mariachi/admin access is granted
       // outside the app by trusted server-side administration.
-      router.replace("/event-details");
+      router.replace("/role-redirect");
     } else if (!hasSession && !isPublicRoute) {
       router.replace("/welcome");
     }

@@ -99,16 +99,42 @@ export default function BookingScreen() {
         .select("id")
         .single();
 
-      if (error || !data) {
-        Alert.alert("No pudimos enviar la solicitud", "Revisa tu conexión e inténtalo de nuevo.");
+            if (error || !data) {
+        if (__DEV__) {
+          if (error) {
+            console.error("[BOOKING] Error de Supabase:", {
+              code: error.code,
+              message: error.message,
+            });
+          } else {
+            console.error(
+              "[BOOKING] Supabase no devolvió un ID y no reportó un error."
+            );
+          }
+        }
+
+        Alert.alert(
+          "No pudimos enviar la solicitud",
+          "Revisa tu conexión e inténtalo de nuevo."
+        );
         return;
       }
 
       Alert.alert("Solicitud enviada", "Tu contratación quedó registrada como pendiente.", [
         { text: "Ver solicitud", onPress: () => router.replace({ pathname: "/event-detail", params: { eventId: data.id } }) },
       ]);
-    } catch {
-      Alert.alert("Error de conexión", "No pudimos guardar la solicitud. Inténtalo de nuevo.");
+        } catch (error: unknown) {
+      if (__DEV__) {
+        console.error("[BOOKING] Excepción inesperada:", {
+          name: error instanceof Error ? error.name : "UnknownError",
+          message: error instanceof Error ? error.message : "Error no identificado",
+        });
+      }
+
+      Alert.alert(
+        "Error de conexión",
+        "No pudimos guardar la solicitud. Inténtalo de nuevo."
+      );
     } finally {
       setIsSaving(false);
     }
